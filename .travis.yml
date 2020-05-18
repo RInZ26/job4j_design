@@ -17,7 +17,7 @@ env:
 notifications:
   email:
     recipients:
-      -ivs1996@mail.ru
-    djkill59@mail.ru
+      - ivs1996@mail.ru
+      - djkill59@mail.ru
     on_success: never # default: change
     on_failure: always # default: always
