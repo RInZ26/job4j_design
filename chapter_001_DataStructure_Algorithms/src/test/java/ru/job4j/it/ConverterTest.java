@@ -6,7 +6,7 @@ import java.util.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class IteratorOfIteratorsTest {
+public class ConverterTest {
 
     Iterator<Integer> it;
 
