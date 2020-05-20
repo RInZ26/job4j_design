@@ -28,7 +28,8 @@ public class SimpleArrayTest {
     public void wrongIndexWhenAdd() {
        assertFalse(stringSimpleArray.add("blabla"));
     }
-    @Test
+
+    @Test (expected = IndexOutOfBoundsException.class)
     public void wrongIndexWithGet() {
         assertFalse(stringSimpleArray.remove(stringSimpleArray.size() + 1));
     }

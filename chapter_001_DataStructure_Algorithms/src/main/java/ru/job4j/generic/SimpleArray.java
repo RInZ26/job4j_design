@@ -97,13 +97,7 @@ public class SimpleArray<T> implements Iterable<T> {
      * @return true/false;
      */
     private boolean isIndexValid(int index) {
-	try {
-	    Objects.checkIndex(index, data.length);
-	} catch (IndexOutOfBoundsException indexOutOf) {
-	    System.out.println(indexOutOf.getClass());
-	    return false;
-	}
-	return true;
+	return index == Objects.checkIndex(index, data.length);
     }
 
     /**
@@ -117,7 +111,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-	return new Iterator() {
+	return new Iterator<T>() {
 	    /**
 	     * Указатель внутри итератора на следующий элемент
 	     */
@@ -135,11 +129,10 @@ public class SimpleArray<T> implements Iterable<T> {
 
 	    @Override
 	    public T next() {
-		if (hasNext()) {
-		    return (T) data[pointer++];
-		} else {
+		if (!hasNext()) {
 		    throw new NoSuchElementException();
 		}
+		return (T) data[pointer++];
 	    }
 	};
     }
