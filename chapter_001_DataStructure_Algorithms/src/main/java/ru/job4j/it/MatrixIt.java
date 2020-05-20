@@ -14,11 +14,11 @@ public class MatrixIt implements Iterator<Integer> {
      */
     private final int[][] data;
     /**
-     * Указатель на строку
+     * Указатель на следующую строку
      */
     private int row;
     /**
-     * Указатель на столбец
+     * Указатель на следующий столбец
      */
     private int column;
 
@@ -32,20 +32,18 @@ public class MatrixIt implements Iterator<Integer> {
     }
 
     /**
-     * Проверка, есть ли следующий массив
-     * Без учета, что массив может быть null
+     * Проверка, есть ли следующая ячейка
+     * Если массив пустой - скипаем
      *
      * @return есть : нет
      */
     @Override
     public boolean hasNext() {
-	boolean result = row < data.length && column < data[row].length;
-	if (!result && row < data.length) {
+	while (row < data.length && (data[row].length == 0 || column == data[row].length)) {
 	    row++;
 	    column = 0;
-	    return hasNext();
 	}
-	return result;
+	return column < data[row].length;
     }
 
     /**
