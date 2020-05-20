@@ -27,14 +27,10 @@ public class Converter {
 	     */
 	    @Override
 	    public boolean hasNext() {
-		while (it.hasNext() || currentIterator.hasNext()) {
-		    if (currentIterator.hasNext()) {
-			return true;
-		    } else {
-			currentIterator = it.next();
-		    }
+		while (it.hasNext() && !currentIterator.hasNext()) {
+		    currentIterator = it.next();
 		}
-		return false;
+		return currentIterator.hasNext();
 	    }
 
 	    /**
