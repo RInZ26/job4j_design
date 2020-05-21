@@ -1,6 +1,9 @@
 package ru.job4j.collection;
 
 public class SimpleStack<T> {
+    /**
+     * Хранилище элементов
+     */
     private ForwardLinked<T> linked = new ForwardLinked<T>();
 
     /**
