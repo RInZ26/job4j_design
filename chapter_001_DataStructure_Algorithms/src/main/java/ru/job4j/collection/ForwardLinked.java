@@ -93,6 +93,33 @@ public class ForwardLinked<T> implements Iterable<T> {
 	}
     }
 
+    /**
+     * Переворот списка.
+     * revertedHead - цепочка задом-наперёд
+     * Идея захкватывать через getLast, добавлять в revertedNextNode и вызывать deleteLast
+     * Продолжать это пока reveredNextNode.next не добежит до head
+     */
+    public void revert() {
+	if (!isEmpty()) {
+	    Node<T> revertedHead = getLastNode();
+	    deleteLast();
+	    Node<T> revertedNextNode = getLastNode();
+	    if (revertedNextNode != null) {
+		revertedHead.next = revertedNextNode;
+		deleteLast();
+		while (revertedNextNode != head) {
+		    revertedNextNode.next = getLastNode();
+		    if (revertedNextNode.next == null) {
+			break;
+		    }
+		    deleteLast();
+		    revertedNextNode = revertedNextNode.next;
+		}
+	    }
+	    head = revertedHead;
+	}
+    }
+
     @Override
     public Iterator<T> iterator() {
 	return new Iterator<T>() {
@@ -124,4 +151,5 @@ public class ForwardLinked<T> implements Iterable<T> {
 	    this.next = next;
 	}
     }
+
 }

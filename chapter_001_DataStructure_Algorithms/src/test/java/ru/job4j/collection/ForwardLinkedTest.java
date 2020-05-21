@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 public class ForwardLinkedTest {
@@ -32,5 +33,54 @@ public class ForwardLinkedTest {
 	linked.deleteFirst();
 	Iterator<Integer> it = linked.iterator();
 	assertThat(it.next(), is(2));
+    }
+
+    @Test
+    public void whenAddThenIter() {
+	ForwardLinked<Integer> linked = new ForwardLinked<>();
+	linked.add(1);
+	linked.add(2);
+	Iterator<Integer> it = linked.iterator();
+	assertThat(it.next(), is(1));
+	assertThat(it.next(), is(2));
+    }
+
+    @Test
+    public void whenAddAndRevertThenIter() {
+	ForwardLinked<Integer> linked = new ForwardLinked<>();
+	linked.add(1);
+	linked.add(2);
+	linked.revert();
+	Iterator<Integer> it = linked.iterator();
+	assertThat(it.next(), is(2));
+	assertThat(it.next(), is(1));
+    }
+    @Test
+    public void whenRevertEmpty() {
+	ForwardLinked<Integer> linked = new ForwardLinked<>();
+	linked.revert();
+	Iterator<Integer> it = linked.iterator();
+    	assertFalse(it.hasNext());
+    }
+    @Test
+    public void whenRevertWithOneElement() {
+	ForwardLinked<Integer> linked = new ForwardLinked<>();
+	linked.add(1);
+	linked.revert();
+	Iterator<Integer> it = linked.iterator();
+	assertThat(it.next(), is(1));
+    }
+
+    @Test
+    public void whenAddAndRevertThenIterWithManyElements() {
+	ForwardLinked<Integer> linked = new ForwardLinked<>();
+	linked.add(1);
+	linked.add(2);
+	linked.add(3);
+	linked.add(4);
+	linked.revert();
+	Iterator<Integer> it = linked.iterator();
+	assertThat(it.next(), is(4));
+	assertThat(it.next(), is(3));
     }
 }
