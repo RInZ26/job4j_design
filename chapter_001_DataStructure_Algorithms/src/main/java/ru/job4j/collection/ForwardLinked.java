@@ -38,20 +38,25 @@ public class ForwardLinked<T> implements Iterable<T> {
     /**
      * Удаление последнего элемента
      * Учитывается, что head может быть равен null или head - единственный элемент в списке
+     * Дублирует идею getlastElement и возвращает значение удаленного
      */
-    public void deleteLast() {
+    public T deleteLast() {
 	if (isEmpty()) {
 	    throw new NoSuchElementException();
 	}
+	T element;
 	if (head.next == null) {
+	    element = head.value;
 	    head = null;
 	} else {
 	    Node<T> penultNode = head;
 	    while (penultNode.next.next != null) {
 		penultNode = penultNode.next;
 	    }
+	    element = penultNode.next.value;
 	    penultNode.next = null;
 	}
+	return element;
     }
 
     /**
@@ -84,7 +89,7 @@ public class ForwardLinked<T> implements Iterable<T> {
      *
      * @return ~
      */
-    public T getLastElement() {
+    private T getLastElement() {
 	Node<T> lastNode = getLastNode();
 	if (lastNode != null) {
 	    return lastNode.value;

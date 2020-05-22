@@ -12,9 +12,7 @@ public class SimpleStack<T> {
      * @return элемент
      */
     public T pop() {
-	T element = linked.getLastElement();
-	linked.deleteLast();
-	return element;
+	return linked.deleteLast();
     }
 
     /**
