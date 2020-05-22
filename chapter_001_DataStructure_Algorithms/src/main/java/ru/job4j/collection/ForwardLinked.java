@@ -101,7 +101,6 @@ public class ForwardLinked<T> implements Iterable<T> {
 		oldThreadOfNodes = oldThreadOfNodes.next;
 		secondNode.next = firstNode;
 		firstNode = secondNode;
-
 	    }
 	    head = secondNode;
 	}
