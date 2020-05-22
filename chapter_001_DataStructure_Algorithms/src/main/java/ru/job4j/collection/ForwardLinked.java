@@ -38,7 +38,7 @@ public class ForwardLinked<T> implements Iterable<T> {
     /**
      * Удаление последнего элемента
      * Учитывается, что head может быть равен null или head - единственный элемент в списке
-     * Дублирует идею getlastElement и возвращает значение удаленного
+     * Возвращает значение удаленного
      */
     public T deleteLast() {
 	if (isEmpty()) {
@@ -84,44 +84,26 @@ public class ForwardLinked<T> implements Iterable<T> {
 	return lastNode;
     }
 
-    /**
-     * Возвращает элемент из последний Node или null, если её нет
-     *
-     * @return ~
-     */
-    private T getLastElement() {
-	Node<T> lastNode = getLastNode();
-	if (lastNode != null) {
-	    return lastNode.value;
-	} else {
-	    return null;
-	}
-    }
 
     /**
      * Переворот списка.
-     * revertedHead - цепочка задом-наперёд
-     * Идея захкватывать через getLast, добавлять в revertedNextNode и вызывать deleteLast
-     * Продолжать это пока reveredNextNode.next не добежит до head
+     * firstNode - указатель на первый, элемент, secondNode - на второй элемент.
+     * OldThreadOfNodes - чтобы не потерять прошлую цепочку, берется как secondNode.next и далее.
+     * Идея следующая: Рассматривается пара Node, ссылка из второй переопределяется на первую(secondNode.next = firstNode) и всё сдвигается
      */
     public void revert() {
 	if (!isEmpty()) {
-	    Node<T> revertedHead = getLastNode();
-	    deleteLast();
-	    Node<T> revertedNextNode = getLastNode();
-	    if (revertedNextNode != null) {
-		revertedHead.next = revertedNextNode;
-		deleteLast();
-		while (revertedNextNode != head) {
-		    revertedNextNode.next = getLastNode();
-		    if (revertedNextNode.next == null) {
-			break;
-		    }
-		    deleteLast();
-		    revertedNextNode = revertedNextNode.next;
-		}
+	    Node<T> firstNode = head;
+	    Node<T> secondNode = head;
+	    Node<T> oldThreadOfNodes = head.next;
+	    while (oldThreadOfNodes != null) {
+		secondNode = oldThreadOfNodes;
+		oldThreadOfNodes = oldThreadOfNodes.next;
+		secondNode.next = firstNode;
+		firstNode = secondNode;
+
 	    }
-	    head = revertedHead;
+	    head = secondNode;
 	}
     }
 
