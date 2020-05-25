@@ -31,33 +31,34 @@ public class SimpleLinkedList<T> implements Iterable<T> {
     private int countOfElements;
 
     /**
+     * Конструктор с элегантными пустыми Node, для красивой реализации методов add, get.
+     */
+    public SimpleLinkedList() {
+	start = new Node<>();
+	finish = new Node<>();
+	start.next = finish;
+	finish.previous = start;
+    }
+
+    /**
      * Добавление элемента в связный список.
-     * Вначале обработка случая первого использоваения списка:
-     * Если первого элемента нет, обычное присвоение.
-     * Если есть первый, но нет последнего, тогда уже начинаем присваивать ссылки
-     * <p>
-     * В противном случае, если список имеет и start и finish, то работаем только с finish.
-     *
+     * Элегантно пользуемся пустыми Nodaми и через них формируем список. То есть он выглядит так:
+     * До первого Add: (FS)fakeStart( <- null . -> FF) -   (FF)fakeFinish(<- FS, ->null)
+     *После: FS (<-null, -> NewNode) -  NewNode (<- FS, -> FF) - FF (<-NewNode,-> null)
+     * И элементов в списке будет фиксироваться именно 1.
      * @param element элемент
      */
     public void add(T element) {
-	Node<T> addedNode = new Node<T>(finish, null, element);
-	if (start == null) {
-	    start = addedNode;
-	} else if (finish == null) {
-	    start.next = addedNode;
-	    addedNode.previous = start;
-	    finish = addedNode;
-	} else {
-	    finish.next = addedNode;
-	    finish = addedNode;
-	}
+	Node<T> addedNode = new Node<T>(null, finish, element);
+	finish.previous.next = addedNode;
+	finish.previous = addedNode;
 	countOfElements++;
 	versionOfCollection++;
     }
 
     /**
      * Взятие элемента по индексу. В зависимости от индекса, мы бежим либо в прямую сторону, либо в обратную
+     * resultNode -  Т.к. у нас первый и последний элемент в списке является заглушкой, то здесь в качестве первого элемента выступает start.next || finish.previous
      *
      * @param index - индекс
      * @return элемент найденной ноды / IndexOutOfBounds;
@@ -67,12 +68,12 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 	if (index == Objects.checkIndex(index, countOfElements)) {
 	    Node<T> resultNode;
 	    if (index <= countOfElements / 2) {
-		resultNode = start;
+		resultNode = start.next;
 		for (int c = 0; c < index; c++) {
 		    resultNode = resultNode.next;
 		}
 	    } else {
-		resultNode = finish;
+		resultNode = finish.previous;
 		for (int c = countOfElements; c > index; c--) {
 		    resultNode = resultNode.previous;
 		}
@@ -92,15 +93,16 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 	    private int currentVersionOfCollection = SimpleLinkedList.this.versionOfCollection;
 	    /**
 	     * Поинтер на ТЕКУЩИЙ Node, но с учетом того, что мы всегда проверяем currentNode.next
+	     *  Т.к. у нас первый и последний элемент в списке является заглушкой, то здесь в качестве первого элемента выступает start.next, а в качестве проверки на окочание - finish
 	     */
-	    private Node<T> currentNode = new Node(null, SimpleLinkedList.this.start, null);
+	    private Node<T> currentNode = new Node<T>(null, SimpleLinkedList.this.start.next, null);
 
 	    @Override
 	    public boolean hasNext() {
 		if (currentVersionOfCollection != SimpleLinkedList.this.versionOfCollection) {
 		    throw new ConcurrentModificationException();
 		}
-		return currentNode.next != null;
+		return currentNode.next != finish;
 	    }
 
 	    @Override
@@ -134,10 +136,23 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 	 */
 	T element;
 
+	/**
+	 * Основной конструктор
+	 *
+	 * @param previous Ссылка на прошлую
+	 * @param next Ссылка на следующую
+	 * @param element значение
+	 */
 	Node(Node<T> previous, Node<T> next, T element) {
 	    this.previous = previous;
 	    this.next = next;
 	    this.element = element;
+	}
+
+	/**
+	 * Для создания null-заглушек в конструкторе SimpleLinkedList
+	 */
+	Node() {
 	}
     }
 }
