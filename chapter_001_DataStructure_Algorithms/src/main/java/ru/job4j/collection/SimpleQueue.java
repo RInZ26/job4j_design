@@ -1,5 +1,12 @@
 package ru.job4j.collection;
 
+/**
+ * Класс - очередь.
+ * Данные хранятся по необходимости, либо в in, либо в out, либо в in+out
+ * Поэтому для отслеживания размера есть счетчик
+ *
+ * @param <T>
+ */
 public class SimpleQueue<T> {
     /**
      * Количество элементов в очереди
@@ -7,36 +14,34 @@ public class SimpleQueue<T> {
     private int countOfElements;
 
     /**
-     * Стэк для хранения данных
+     * Стэк для хранения данных в прямом порядке
      */
     private final SimpleStack<T> in = new SimpleStack<>();
     /**
-     * Стэк для перебора
+     * Стэк для хранения элементов, готовых к выдаче в порядке очереди
      */
     private final SimpleStack<T> out = new SimpleStack<>();
 
     /**
-     * Извращенский перебор очереди через два стека
-     * Сначала достаем все элементы, кроме последнего
-     * В out получается очередь задом наперед, поэтому мы снова в цикле перекидываем её в in.
+     * out отражает in наоборот. Пока out непустой, мы можем работать с ним, накапливая данные в In. Как только он опустеет - перекидываем в него из in
+     * <p>
      *
      * @return первый элемент
      */
     public T poll() {
 	countOfElements--;
-	for (int c = 0; c < countOfElements; c++) {
-	    out.push(in.pop());
+	if (out.size() == 0) {
+	    while (0 < in.size()) {
+		out.push(in.pop());
+	    }
 	}
-	T result = in.pop();
-	for (int c = 0; c < countOfElements; c++) {
-	    in.push(out.pop());
-	}
-	return result;
+	return out.pop();
     }
 
     /**
      * Передаем элемент в очередь
      * Т.к. у нас push в стэке не boolean, необходим счетчик элементов в виде countOfelements
+     *
      * @param value ~
      */
     public void push(T value) {
@@ -46,9 +51,10 @@ public class SimpleQueue<T> {
 
     /**
      * Геттер для countOfElements.
+     *
      * @return ~
      */
     public int size() {
-        return countOfElements;
+	return countOfElements;
     }
 }

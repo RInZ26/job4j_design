@@ -18,12 +18,13 @@ public class SimpleQueueTest {
     }
 
     @Test
-    public void when2PushPoll() {
+    public void when2Push2Poll() {
 	SimpleQueue<Integer> queue = new SimpleQueue<>();
 	queue.push(1);
 	queue.push(2);
 	int rsl = queue.poll();
 	assertThat(rsl, is(1));
+	assertThat(queue.poll(), is(2));
     }
 
     @Test
