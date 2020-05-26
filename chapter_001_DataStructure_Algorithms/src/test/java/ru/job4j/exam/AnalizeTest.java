@@ -5,8 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import ru.job4j.exam.Analize.*;
 
@@ -42,6 +41,23 @@ public class AnalizeTest {
 	List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
 	Info actual = Analize.diff(previousList, previousList);
 	assertThat(actual.added, is(0));
+	assertThat(actual.changed, is(0));
+	assertThat(actual.deleted, is(0));
+    }
+
+    @Test
+    public void testWhenCurrentIsEmpty() {
+	List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
+	Info actual = Analize.diff(previousList, Collections.emptyList());
+	assertThat(actual.added, is(0));
+	assertThat(actual.changed, is(0));
+	assertThat(actual.deleted, is(4));
+    }
+    @Test
+    public void testWhenPreviousIsEmpty() {
+	List<User> currentList = Arrays.asList(nastya, dima, masha, ane4ka);
+	Info actual = Analize.diff(Collections.emptyList(), currentList);
+	assertThat(actual.added, is(4));
 	assertThat(actual.changed, is(0));
 	assertThat(actual.deleted, is(0));
     }
