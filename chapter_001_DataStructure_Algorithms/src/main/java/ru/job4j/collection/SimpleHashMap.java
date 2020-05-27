@@ -13,7 +13,7 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     private int versionOfCollection;
 
     /**
-     * Размер table по умолчанию
+     * Размер table по умолчанию, а вообще он должен быть строго кратен 2 для корректной работы хэширования
      */
     public static final int DEFAULT_SIZE = 16;
     /**
@@ -41,16 +41,16 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     private int countOfUsedBaskets = 0;
 
     /**
-     * Конструкторы с кастомным размером и процентом заполнения и с дефолтными
+     * Конструктор c произвольным процентом заполнения и с дефолтным
      * Без валидации входных данных
      */
-    public SimpleHashMap(int sizeOfTable, float loadFactor) {
-	table = new Node[sizeOfTable];
+    public SimpleHashMap(float loadFactor) {
+	table = new Node[DEFAULT_SIZE];
 	this.loadFactor = loadFactor;
     }
 
     public SimpleHashMap() {
-	this(DEFAULT_SIZE, DEFAULT_LOAD_FACTOR);
+	this(DEFAULT_LOAD_FACTOR);
     }
 
     /**
@@ -173,7 +173,7 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 
     /**
      * Расширяем таблицу, если достигли/привысили loadFactor
-     * В качестве эталона x1.5 из ArrayList
+     * Расширяем строго по степеням двойки, чтобы правильно хэшировать
      * Затем перехешируем её элементы
      * Учитывается наличие связных списков внутри
      * oldTable - содержит ссылку на старую
@@ -183,7 +183,7 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	countOfUsedBaskets = 0;
 	countOfElements = 0;
 	Node<K, V>[] oldTable = table;
-	table = new Node[(int) (table.length * 1.5)];
+	table = new Node[(table.length << 2)];
 	for (Node<K, V> oldNode : oldTable) {
 	    if (oldNode != null) {
 		Node<K, V> deepNode = oldNode;
@@ -311,7 +311,6 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 
 	/**
 	 * Returns an iterator over elements of type {@code T}.
-
 	 */
 	@Override
 	public Iterator<Node<K, V>> iterator() {
