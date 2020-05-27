@@ -7,6 +7,7 @@ public class Analize {
     public static Info diff(List<User> previous, List<User> current) {
 	Info infoAboutCollections = new Info();
 	Map<Integer, User> previousUserMap = new HashMap<Integer, User>();
+	int unchanged = 0;
 	for (User user : previous) {
 	    previousUserMap.put(user.id, user);
 	}
@@ -17,10 +18,10 @@ public class Analize {
 	    } else if (!testedUserFromPreviousMap.get().name.equals(currentUser.name)) {
 		infoAboutCollections.changed++;
 	    } else {
-	        infoAboutCollections.unchanged++;
+		unchanged++;
 	    }
 	}
-	infoAboutCollections.deleted = previousUserMap.size() - infoAboutCollections.added - infoAboutCollections.changed - infoAboutCollections.unchanged;
+	infoAboutCollections.deleted = previousUserMap.size() - infoAboutCollections.added - infoAboutCollections.changed - unchanged;
 	return infoAboutCollections;
     }
 
@@ -38,6 +39,5 @@ public class Analize {
 	int added;
 	int changed;
 	int deleted;
-	int unchanged;
     }
 }
