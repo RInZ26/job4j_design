@@ -183,7 +183,7 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	countOfUsedBaskets = 0;
 	countOfElements = 0;
 	Node<K, V>[] oldTable = table;
-	table = new Node[(table.length << 2)];
+	table = new Node[(table.length << 1)];
 	for (Node<K, V> oldNode : oldTable) {
 	    if (oldNode != null) {
 		Node<K, V> deepNode = oldNode;
