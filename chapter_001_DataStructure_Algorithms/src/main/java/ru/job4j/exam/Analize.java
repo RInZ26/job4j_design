@@ -1,54 +1,30 @@
 package ru.job4j.exam;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Analize {
 
-    /**
-     * План: Отсортировать элементы через стрим и сделать заодно КОПИИ коллекций.
-     * Далее сравниваем через простенький while элементы по id, увеличивая счетчики, там где надо
-     * Вероятнее всего будет ситуация, когда в одной из коллекций остались недопроверенные элементы, либо в старой, либо в новой из-за удалений и вставок
-     * Тогда отрабатывает последний if, следуя простой логике - если раньше закончился currentList, значит разница это количество удаленных элементов,
-     * если раньше закончился previousList, значит - количество добавленных
-     * Великолепный план, Уолтер!...
-     */
     public static Info diff(List<User> previous, List<User> current) {
-	Info infoAboutDifferences = new Info();
-	var sortedPrevious = previous.stream().sorted().collect(Collectors.toList());
-	var sortedCurrent = current.stream().sorted().collect(Collectors.toList());
-	int counterForPreviousUser = 0, counterForCurrentUser = 0;
-	int minLengthOfArrays = Math.min(sortedPrevious.size(), sortedCurrent.size());
-	int idPreviousUser, idCurrentUser;
-	while (counterForCurrentUser < minLengthOfArrays || counterForPreviousUser < minLengthOfArrays) {
-	    idPreviousUser = sortedPrevious.get(counterForPreviousUser).id;
-	    idCurrentUser = sortedCurrent.get(counterForCurrentUser).id;
-	    if (idPreviousUser < idCurrentUser) {
-		infoAboutDifferences.deleted++;
-		counterForPreviousUser++;
-	    } else if (idPreviousUser > idCurrentUser) {
-		infoAboutDifferences.added++;
-		counterForCurrentUser++;
+	Info infoAboutCollections = new Info();
+	Map<Integer, User> previousUserMap = new HashMap<Integer, User>();
+	for (User user : previous) {
+	    previousUserMap.put(user.id, user);
+	}
+	for (User currentUser : current) {
+	    Optional<User> testedUserFromPreviousMap = Optional.ofNullable(previousUserMap.putIfAbsent(currentUser.id, currentUser));
+	    if (testedUserFromPreviousMap.isEmpty()) {
+		infoAboutCollections.added++;
+	    } else if (!testedUserFromPreviousMap.get().name.equals(currentUser.name)) {
+		infoAboutCollections.changed++;
 	    } else {
-		if (!sortedPrevious.get(counterForPreviousUser).name.equals(sortedCurrent.get(counterForCurrentUser).name)) {
-		    infoAboutDifferences.changed++;
-		}
-		counterForCurrentUser++;
-		counterForPreviousUser++;
+	        infoAboutCollections.unchanged++;
 	    }
 	}
-	if (counterForPreviousUser < sortedPrevious.size()) {
-	    infoAboutDifferences.deleted += sortedPrevious.size() - counterForCurrentUser;
-	} else if (counterForCurrentUser < sortedCurrent.size()) {
-	    infoAboutDifferences.added += sortedCurrent.size() - counterForCurrentUser;
-	}
-	return infoAboutDifferences;
+	infoAboutCollections.deleted = previousUserMap.size() - infoAboutCollections.added - infoAboutCollections.changed - infoAboutCollections.unchanged;
+	return infoAboutCollections;
     }
 
-    /**
-     * Подписали на comparable для сортировки по id
-     */
-    public static class User implements Comparable<User> {
+    public static class User {
 	int id;
 	String name;
 
@@ -56,45 +32,12 @@ public class Analize {
 	    this.id = id;
 	    this.name = name;
 	}
-
-	@Override
-	public int compareTo(User o) {
-	    return Integer.compare(this.id, o.id);
-	}
     }
 
     public static class Info {
 	int added;
 	int changed;
 	int deleted;
-
-	Info() {
-	}
-
-	Info(int added, int changed, int deleted) {
-	    this.added = added;
-	    this.changed = changed;
-	    this.deleted = deleted;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-	    if (this == o) {
-		return true;
-	    }
-	    if (o == null || getClass() != o.getClass()) {
-		return false;
-	    }
-	    Info info = (Info) o;
-	    return added == info.added
-		    && changed == info.changed
-		    && deleted == info.deleted;
-	}
-
-	@Override
-	public int hashCode() {
-	    return Objects.hash(added, changed, deleted);
-	}
+	int unchanged;
     }
-
 }
