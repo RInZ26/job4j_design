@@ -11,6 +11,7 @@
 
     <modules>
         <module>chapter_001_DataStructure_Algorithms</module>
+        <module>chapter_002_Input_Output</module>
     </modules>
 
     <name>job4j_design</name>
