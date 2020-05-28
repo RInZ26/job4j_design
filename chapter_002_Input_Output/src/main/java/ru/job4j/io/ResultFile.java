@@ -1,7 +1,6 @@
-package io;
+package ru.job4j.io;
 
 import java.io.FileOutputStream;
-import java.util.Arrays;
 
 /**
  * Класс для демонстрации работы FileInputStream
@@ -27,6 +26,18 @@ public class ResultFile {
 		out.write(System.lineSeparator().getBytes());
 	    }
 	} catch (Exception e) {
+	    System.out.println(e.getStackTrace());
+	}
+    }
+
+    public static boolean writeInFile(String filename, Object[] data, String splitter) {
+	try (FileOutputStream out = new FileOutputStream(filename)) {
+	    for (Object o : data) {
+		out.write((o.toString() + splitter).getBytes());
+	    }
+	    return true;
+	} catch (Exception e) {
+	    return false;
 	}
     }
 }
