@@ -17,14 +17,16 @@ import java.util.stream.Collectors;
 public class Config {
     /**
      * Путь к файлу
+     * "final для Map, чтобы не затереть мапу случаем. final для path указывает,
+     * что Config работает только с один файлом настроек. Это похоже на класс Properties,
+     * который также работает только с одним файлом настроек"(с)
      */
-    private String filePath;
+    private final String filePath;
     /**
      * Мапа для хранения настроек и их параметров Ключ - имя настройки, значение - значаение настройки
      */
-    private Map<String, String> mapOfProperties = new HashMap<>();
+    private final Map<String, String> mapOfProperties = new HashMap<>();
 
-    //TODO почему строка должна быть final здесь?
     public Config(String filePath) {
 	this.filePath = filePath;
     }
@@ -39,10 +41,10 @@ public class Config {
     public void load() {
 	try (BufferedReader in = new BufferedReader(new FileReader(filePath))) {
 	    Pattern optionPattern = Pattern.compile("\\s*\\w+\\s*=\\s*\\w+\\s*");
-	    mapOfProperties = in.lines().filter(o -> optionPattern.matcher(o).matches()).map(o -> {
+	    mapOfProperties.putAll(in.lines().filter(o -> optionPattern.matcher(o).matches()).map(o -> {
 		String[] splittedO = o.split("=");
 		return new Holder(splittedO[0], splittedO.length > 1 ? splittedO[1] : null);
-	    }).collect(Collectors.toMap(o -> o.key.trim(), o -> o.value.trim()));
+	    }).collect(Collectors.toMap(o -> o.key.trim(), o -> o.value.trim())));
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

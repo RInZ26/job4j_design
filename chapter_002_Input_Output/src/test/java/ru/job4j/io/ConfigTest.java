@@ -1,13 +1,10 @@
 package ru.job4j.io;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -82,6 +79,8 @@ public class ConfigTest {
      * =value
      * Как бы он вдруг не стал интерпритировать "" как ключ
      * Или =value как ключ
+     *
+     * Не будет благодаря проверки на паттерн
      */
     @Test
     public void whenFirstFieldInPairIsEmpty() {
@@ -102,5 +101,4 @@ public class ConfigTest {
 		config.value("password"));
 	assertFalse(config.containsKey("password"));
     }
-
 }
