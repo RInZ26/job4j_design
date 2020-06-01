@@ -19,6 +19,7 @@ public class Analizy {
      * Если с ошибкой, тогда - отслеживаем ли мы уже какой-то интервал ? идём дальше : метим старт
      * Если запись без ошибки - отслеживаем ли мы уже какой-то интервал? идём дальше : метим финиш
      * Учитывается возможность, что ошибка началась, но не закончилась
+     *
      * @param source откуда берем лог
      * @param target куда отправляем результат
      * @return true - чтение создание списка прошло успешно (НО НЕ СОХРАНЕНИЕ) false - фиаско
@@ -27,11 +28,10 @@ public class Analizy {
 	List<Holder> listOfPeriodsOfError = new ArrayList<>();
 	try (BufferedReader in = new BufferedReader(new FileReader(source))) {
 	    Predicate<String> isError = (o -> o.equals("400") || o.equals("500"));
-	    Pattern logStringPattern = Pattern.compile("\\d{3}\\s\\d+"); // именно 3 циферки + пробел + что-то похожее на дату
 	    String inNext; // проверка на EOF
 	    Holder periodWhenErrorWas = Holder.EMPTY_HOLDER;
 	    while ((inNext = in.readLine()) != null) {
-		if (logStringPattern.matcher(inNext).find()) { //проверка что строка ликвидная, а не мусор
+		if (isLogRecord(inNext)) { //проверка что строка ликвидная, а не мусор
 		    if (isError.test(Holder.parseCode(inNext))) { //проверка что запись является записью с ошибкой
 			if (periodWhenErrorWas.equals(Holder.EMPTY_HOLDER)) { //если поймали начало периода
 			    periodWhenErrorWas = new Holder();
@@ -56,15 +56,35 @@ public class Analizy {
     }
 
     /**
+     * Заменя регулярки на проверку, является ли строка похожей на запись лога
+     * Сначала пробуем запарсить число, если словили эксепшен - точно не лог запись
+     * Проверяется только первая часть лога - код. Вторая игнорируется и допускается любой, лишь бы была вообще
+     * Остальная проверка в return
+     *
+     * @param record проверяемая строка
+     * @return Если засплитилась только на 1 элемент => это простое число => не лог запись
+     */
+    private static boolean isLogRecord(String record) {
+	String[] splittedRecord = record.split(" ");
+	try {
+	    Integer.parseInt(splittedRecord[0]);
+	} catch (NumberFormatException e) {
+	    return false;
+	}
+	return splittedRecord.length > 1;
+    }
+
+    /**
      * Да, у меня уже есть такой же метод в LogFilter, но можно понабивать руки!
      *
      * @param listOfObjectsForSavingInFile что сохраняем
-     * @param target                   куда ~
+     * @param target                       куда ~
      * @param <K>                          для красоты
      */
     public static <K> boolean saveToFile(List<K> listOfObjectsForSavingInFile, String target) {
 	try (PrintWriter out = new PrintWriter(new FileWriter(target))) {
-	    listOfObjectsForSavingInFile.forEach(o -> out.write(o.toString() + "\r"));
+	    listOfObjectsForSavingInFile.forEach(o -> out.print(o.toString() + "\r"));
+	    out.flush();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    return false;
