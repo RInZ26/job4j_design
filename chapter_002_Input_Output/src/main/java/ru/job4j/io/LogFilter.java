@@ -12,16 +12,20 @@ import java.util.stream.Collectors;
  */
 public class LogFilter {
     /**
-     * Может показаться, что фильтер занимается лишним, но нет.
-     * Так как у нас паттерн, мы можем его использовать и для просто копирования из файла
-     * указав \\?* в pattern
+     * РЕГУЛЯРКИ ОБЯЗАТЕЛЬНО ДОЛЖНЫ БЫТЬ ЛИБО STATIC FINAL, ЛИБО НИКАК вообще
+     * Связано с тем, что они работают с синхронизацией + довольно сложным устройством внутри себя
      */
-    public static List<String> filter(String file, String pattern) {
+    private static final Pattern PATTERN_FOR_ERRORS = Pattern.compile("\\?*\\s404\\s\\d*");
+
+    /**
+     * Может показаться, что фильтр занимается лишним, но нет.
+     * Чтобы не сохранять в память и пользоваться идеей Buffered - а именно, не нагружать память - уже в самом фильтре идёт получение данных и сразу же фильтрация
+     */
+    public static List<String> filter(String file) {
 	try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-	    return in.lines().filter(o -> Pattern.compile(pattern).matcher(o).find()).collect(Collectors.toList());
+	    return in.lines().filter(o -> PATTERN_FOR_ERRORS.matcher(o).find()).collect(Collectors.toList());
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    System.out.println("gg");
 	    return Collections.emptyList();
 	}
     }
@@ -33,10 +37,10 @@ public class LogFilter {
      * @param filePath   куда записываем
      */
     public static void saveToFile(List<String> listOfData, String filePath) {
-	try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath)))) {
+	try (PrintWriter out = new PrintWriter(new File(filePath))) {
 	    listOfData.forEach(o -> {
-		out.write(o);
-		out.write(System.lineSeparator());
+		out.print(o);
+		out.print(System.lineSeparator());
 	    });
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -44,8 +48,7 @@ public class LogFilter {
     }
 
     public static void main(String[] args) {
-	String pattern = "\\?*\\s404\\s\\d*";
-	List<String> log = filter("log.txt", pattern);
+	List<String> log = filter("log.txt");
 	log.forEach(System.out::println);
 	saveToFile(log, "404.txt");
     }
