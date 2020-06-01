@@ -1,9 +1,7 @@
 package ru.job4j.io;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,19 +14,23 @@ import java.util.stream.Collectors;
  */
 public class Config {
     /**
+     * Регулярка для проверки на соответствие записи в виде что-то=что-то, иначе говоря - записи конфигурации
+     */
+    private static final Pattern PATTERN_FOR_CONFIG_RECORD = Pattern.compile("\\s*\\w+\\s*=\\s*\\w+\\s*");
+    /**
      * Путь к файлу
      * "final для Map, чтобы не затереть мапу случаем. final для path указывает,
      * что Config работает только с один файлом настроек. Это похоже на класс Properties,
      * который также работает только с одним файлом настроек"(с)
      */
-    private final String filePath;
+    private final String path;
     /**
      * Мапа для хранения настроек и их параметров Ключ - имя настройки, значение - значаение настройки
      */
     private final Map<String, String> mapOfProperties = new HashMap<>();
 
     public Config(String filePath) {
-	this.filePath = filePath;
+	this.path = filePath;
     }
 
     /**
@@ -39,9 +41,8 @@ public class Config {
      *      * А так же пробелы идиотские в любом месте
      */
     public void load() {
-	try (BufferedReader in = new BufferedReader(new FileReader(filePath))) {
-	    Pattern optionPattern = Pattern.compile("\\s*\\w+\\s*=\\s*\\w+\\s*");
-	    mapOfProperties.putAll(in.lines().filter(o -> optionPattern.matcher(o).matches()).map(o -> {
+	try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+	    mapOfProperties.putAll(in.lines().filter(o -> PATTERN_FOR_CONFIG_RECORD.matcher(o).matches()).map(o -> {
 		String[] splittedO = o.split("=");
 		return new Holder(splittedO[0], splittedO.length > 1 ? splittedO[1] : null);
 	    }).collect(Collectors.toMap(o -> o.key.trim(), o -> o.value.trim())));
