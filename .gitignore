@@ -5,7 +5,7 @@
 *.swp
 *.out
 *.log
-
+*.txt
 # rails specific
 *.sqlite3
 config/database.yml

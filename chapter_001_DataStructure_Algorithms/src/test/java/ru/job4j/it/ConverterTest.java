@@ -73,9 +73,9 @@ public class ConverterTest {
 
     @Test
     public void hasNextShouldReturnFalseInCaseOfEmptyIterators() {
-        Iterator<Integer> it1 = (new ArrayList<Integer>()).iterator();
-        Iterator<Integer> it2 = (new ArrayList<Integer>()).iterator();
-        Iterator<Integer> it3 = (new ArrayList<Integer>()).iterator();
+        Iterator<Integer> it1 = Collections.emptyIterator();
+        Iterator<Integer> it2 = Collections.emptyIterator();
+        Iterator<Integer> it3 = Collections.emptyIterator();
         Iterator<Iterator<Integer>> its = Arrays.asList(it1, it2, it3).iterator();
         Converter iteratorOfIterators = new Converter();
         it = iteratorOfIterators.convert(its);
