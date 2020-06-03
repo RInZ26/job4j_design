@@ -9,8 +9,10 @@ import java.util.List;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-	Path start = Paths.get("C:\\projects");
-	search(start, ".txt").forEach(System.out::println);
+	if (args.length < 2) {
+	    throw new IllegalArgumentException("Root folder is null or Extension of File is null, u have to put 2 arguments");
+	}
+	search(Paths.get(args[0]), args[1]).forEach(System.out::println);
     }
 
     /**
