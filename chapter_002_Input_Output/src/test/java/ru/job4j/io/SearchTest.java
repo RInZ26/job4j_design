@@ -32,7 +32,7 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = ".txt";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Arrays.asList(txtPath1, txtPath2)));
+	assertThat(Search.search(rootPath, extensionOfFile, false), is(Arrays.asList(txtPath1, txtPath2)));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = "";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Arrays.asList(txtPath1, txtPath2, jsPath1)));
+	assertThat(Search.search(rootPath, extensionOfFile, false), is(Arrays.asList(txtPath1, txtPath2, jsPath1)));
     }
 
     @Test
@@ -66,6 +66,6 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = ".docx";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Collections.emptyList()));
+	assertThat(Search.search(rootPath, extensionOfFile, false), is(Collections.emptyList()));
     }
 }
