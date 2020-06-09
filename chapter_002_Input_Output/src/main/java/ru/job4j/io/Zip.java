@@ -16,9 +16,9 @@ public class Zip {
      * чем-то вроде ячейки в таблице у зипа (УСЛОВНО) в ней указывается имя файла в который будем записывать. ИМЯ ФАЙЛА
      * НЕ ПУТЬ, НЕ ЧТО-ТО ЕЩЁ, А ПРОСТО ИМЯ. Далее начинаем записывать.
      * Странно, что не делаем closeEntry, но видимо при создании новой, автоматически она становится главной (так и есть).
-     * @param sources источники, которые мы в основном будем получать из метода Search.search()
-     * @param target - куда заносим
      *
+     * @param sources источники, которые мы в основном будем получать из метода Search.search()
+     * @param target  - куда заносим
      */
     public void packFiles(List<Path> sources, Path target) {
 	try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target.toString())))) {

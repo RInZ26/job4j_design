@@ -1,17 +1,20 @@
 package ru.job4j.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-	if (args.length < 3) {
-	    throw new IllegalArgumentException("Root folder is null or Extension of File is null, or  option is empty u have to put 3 arguments");
+	Path start = Paths.get("C:\\projects");
+	if (args.length < 2) {
+	    throw new IllegalArgumentException("Root folder is null or Extension of File is null, u have to put 2 arguments");
 	}
-	search(Paths.get(args[0]), args[1], Boolean.valueOf(args[2])).forEach(System.out::println);
+	search(Paths.get(args[0]), args[1]).forEach(System.out::println);
     }
 
     /**
@@ -22,10 +25,25 @@ public class Search {
      *
      * @param root путь из которого начинаем поиск
      * @param ext  расшрение файла. которо проверяется в предикате
-     * @param isLookingForFilesExcludedThisExtensionOrLookingForOnlyThisOne - хотим ли мы найти ВСЁ кроме файлов с ext, либо наоборот только их
      */
-    public static List<Path> search(Path root, String ext, boolean isLookingForFilesExcludedThisExtensionOrLookingForOnlyThisOne) {
-	SearchFiles searcher = new SearchFiles(p -> p.getFileName().toString().endsWith(ext) ^ isLookingForFilesExcludedThisExtensionOrLookingForOnlyThisOne);
+    public static List<Path> search(Path root, String ext) {
+	SearchFiles searcher = new SearchFiles(p -> p.toFile().getName().endsWith(ext));
+	try {
+	    Files.walkFileTree(root, searcher);
+	} catch (Exception e) {
+	    System.out.println("gg");
+	    e.printStackTrace();
+	}
+	return searcher.getListOfPathsWhichPassedRule();
+    }
+
+    /**
+     * Так как старые методы не нужно менять - создать свой метод с предикатом
+     * @param root - откуда ищем
+     * @param rule - предикат
+     */
+    public static List<Path> seekByPredicate(Path root, Predicate<Path> rule) {
+	SearchFiles searcher = new SearchFiles(rule);
 	try {
 	    Files.walkFileTree(root, searcher);
 	} catch (Exception e) {
