@@ -1,7 +1,5 @@
 package ru.job4j.generic;
 
-import java.util.Objects;
-
 /**
  * Класс - заготовка под классы - модели данных
  */

@@ -8,14 +8,10 @@ import java.util.Objects;
 /**
  * Упрощенная реализиация LinkedList
  *
- * @param <T> дженерик
+ * @param <T>
+ * 	дженерик
  */
 public class SimpleLinkedList<T> implements Iterable<T> {
-    /**
-     * * Отражает "версию" коллекции. Если было внесено какое-то изменение,
-     * счетчик увеличивается. Используется для корректной работы итераторов
-     */
-    private int versionOfCollection;
     /**
      * Указатель на первый элемент цепочки
      */
@@ -24,14 +20,19 @@ public class SimpleLinkedList<T> implements Iterable<T> {
      * Указатель на последний элемент цепочки
      */
     Node<T> finish;
-
+    /**
+     * * Отражает "версию" коллекции. Если было внесено какое-то изменение,
+     * счетчик увеличивается. Используется для корректной работы итераторов
+     */
+    private int versionOfCollection;
     /**
      * Количество элементов, которые есть связном списке, аналог list.size
      */
     private int countOfElements;
 
     /**
-     * Конструктор с элегантными пустыми Node, для красивой реализации методов add, get.
+     * Конструктор с элегантными пустыми Node, для красивой реализации методов
+     * add, get.
      */
     public SimpleLinkedList() {
 	start = new Node<>();
@@ -41,12 +42,14 @@ public class SimpleLinkedList<T> implements Iterable<T> {
     }
 
     /**
-     * Добавление элемента в связный список.
-     * Элегантно пользуемся пустыми Nodaми и через них формируем список. То есть он выглядит так:
-     * До первого Add: (FS)fakeStart( <- null . -> FF) -   (FF)fakeFinish(<- FS, ->null)
-     *После: FS (<-null, -> NewNode) -  NewNode (<- FS, -> FF) - FF (<-NewNode,-> null)
-     * И элементов в списке будет фиксироваться именно 1.
-     * @param element элемент
+     * Добавление элемента в связный список. Элегантно пользуемся пустыми Nodaми
+     * и через них формируем список. То есть он выглядит так: До первого Add:
+     * (FS)fakeStart( <- null . -> FF) -   (FF)fakeFinish(<- FS, ->null) После:
+     * FS (<-null, -> NewNode) -  NewNode (<- FS, -> FF) - FF (<-NewNode,->
+     * null) И элементов в списке будет фиксироваться именно 1.
+     *
+     * @param element
+     * 	элемент
      */
     public void add(T element) {
 	Node<T> addedNode = new Node<T>(null, finish, element);
@@ -57,12 +60,16 @@ public class SimpleLinkedList<T> implements Iterable<T> {
     }
 
     /**
-     * Взятие элемента по индексу. В зависимости от индекса, мы бежим либо в прямую сторону, либо в обратную
-     * resultNode -  Т.к. у нас первый и последний элемент в списке является заглушкой, то здесь в качестве первого элемента выступает start.next || finish.previous
+     * Взятие элемента по индексу. В зависимости от индекса, мы бежим либо в
+     * прямую сторону, либо в обратную resultNode -  Т.к. у нас первый и
+     * последний элемент в списке является заглушкой, то здесь в качестве
+     * первого элемента выступает start.next || finish.previous
      *
-     * @param index - индекс
-     * @return элемент найденной ноды / IndexOutOfBounds;
-     * Null'a не должно быть по логике никогда
+     * @param index
+     * 	- индекс
+     *
+     * @return элемент найденной ноды / IndexOutOfBounds; Null'a не должно быть
+     * по логике никогда
      */
     public T get(int index) {
 	if (index == Objects.checkIndex(index, countOfElements)) {
@@ -90,16 +97,19 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 	    /**
 	     * Отслеживание изменений между версиями коллекций
 	     */
-	    private int currentVersionOfCollection = SimpleLinkedList.this.versionOfCollection;
+	    private int currentVersionOfCollection =
+		    SimpleLinkedList.this.versionOfCollection;
 	    /**
 	     * Поинтер на ТЕКУЩИЙ Node, но с учетом того, что мы всегда проверяем currentNode.next
 	     *  Т.к. у нас первый и последний элемент в списке является заглушкой, то здесь в качестве первого элемента выступает start.next, а в качестве проверки на окочание - finish
 	     */
-	    private Node<T> currentNode = new Node<T>(null, SimpleLinkedList.this.start.next, null);
+	    private Node<T> currentNode =
+		    new Node<T>(null, SimpleLinkedList.this.start.next, null);
 
 	    @Override
 	    public boolean hasNext() {
-		if (currentVersionOfCollection != SimpleLinkedList.this.versionOfCollection) {
+		if (currentVersionOfCollection
+			!= SimpleLinkedList.this.versionOfCollection) {
 		    throw new ConcurrentModificationException();
 		}
 		return currentNode.next != finish;
@@ -117,8 +127,8 @@ public class SimpleLinkedList<T> implements Iterable<T> {
     }
 
     /**
-     * Реализация Node из linkedList
-     * Идея структуры с указателем на предыдущий элемент и следующий
+     * Реализация Node из linkedList Идея структуры с указателем на предыдущий
+     * элемент и следующий
      *
      * @param <T>
      */
@@ -139,9 +149,12 @@ public class SimpleLinkedList<T> implements Iterable<T> {
 	/**
 	 * Основной конструктор
 	 *
-	 * @param previous Ссылка на прошлую
-	 * @param next Ссылка на следующую
-	 * @param element значение
+	 * @param previous
+	 * 	Ссылка на прошлую
+	 * @param next
+	 * 	Ссылка на следующую
+	 * @param element
+	 * 	значение
 	 */
 	Node(Node<T> previous, Node<T> next, T element) {
 	    this.previous = previous;

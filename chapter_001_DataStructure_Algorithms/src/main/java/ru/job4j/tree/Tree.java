@@ -1,6 +1,8 @@
 package ru.job4j.tree;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.function.Predicate;
 
 class Tree<E> implements SimpleTree<E> {
@@ -11,7 +13,7 @@ class Tree<E> implements SimpleTree<E> {
     }
 
     public boolean isBinary() {
-        return checkSomething(o -> o.children.size() > 2).isEmpty();
+	return checkSomething(o -> o.children.size() > 2).isEmpty();
     }
 
     public Optional<Node<E>> checkSomething(Predicate<Node<E>> rule) {

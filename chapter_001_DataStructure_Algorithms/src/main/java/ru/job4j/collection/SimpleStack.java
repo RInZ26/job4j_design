@@ -12,7 +12,6 @@ public class SimpleStack<T> {
 
     /**
      * геттер для countOfElements
-     *
      */
     public int size() {
 	return countOfElements;
@@ -31,7 +30,8 @@ public class SimpleStack<T> {
     /**
      * Кладём элемент наверх стека
      *
-     * @param value ~
+     * @param value
+     * 	~
      */
     public void push(T value) {
 	linked.add(value);

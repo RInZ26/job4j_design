@@ -27,6 +27,7 @@ public class BackwardArrayIt implements Iterator<Integer> {
 
     /**
      * Проверка, есть ли следующий элемент
+     *
      * @return ~
      */
     @Override
@@ -36,6 +37,7 @@ public class BackwardArrayIt implements Iterator<Integer> {
 
     /**
      * Возвращаем элемент в обратном порядке с учетом проверки hasNext
+     *
      * @return ? элемент : Exception
      */
     @Override

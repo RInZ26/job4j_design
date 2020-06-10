@@ -15,12 +15,20 @@ public class ConfigTest {
 
     @Before
     public void setUp() {
-	LogFilter.saveToFile(Arrays.asList("name=Petr"), "whenPairWithoutComment.txt");
+	LogFilter.saveToFile(Arrays.asList("name=Petr"),
+			     "whenPairWithoutComment.txt");
 	LogFilter.saveToFile(Collections.emptyList(), "whenFileIsEmpty.txt");
-	LogFilter.saveToFile(Arrays.asList("  ", "", "#fakeadmin=ERROR", "name=Petr", "password=admin"), "whenFileHasCommentsAndEmptyLines.txt");
-	LogFilter.saveToFile(Arrays.asList("  terran=imba  ", "#44555", "name=Petr", "password=admin"), "whenFileHas3difKeys.txt");
-	LogFilter.saveToFile(Arrays.asList("=admin"), "whenFirstFieldInPairIsEmpty.txt");
-	LogFilter.saveToFile(Arrays.asList("password="), "whenSecondFieldInPairIsEmpty.txt");
+	LogFilter.saveToFile(
+		Arrays.asList("  ", "", "#fakeadmin=ERROR", "name=Petr",
+			      "password=admin"),
+		"whenFileHasCommentsAndEmptyLines.txt");
+	LogFilter.saveToFile(
+		Arrays.asList("  terran=imba  ", "#44555", "name=Petr",
+			      "password=admin"), "whenFileHas3difKeys.txt");
+	LogFilter.saveToFile(Arrays.asList("=admin"),
+			     "whenFirstFieldInPairIsEmpty.txt");
+	LogFilter.saveToFile(Arrays.asList("password="),
+			     "whenSecondFieldInPairIsEmpty.txt");
     }
 
     @Test
@@ -75,11 +83,9 @@ public class ConfigTest {
     }
 
     /**
-     * Могут быть ужасы в случае записи
-     * =value
-     * Как бы он вдруг не стал интерпритировать "" как ключ
-     * Или =value как ключ
-     *
+     * Могут быть ужасы в случае записи =value Как бы он вдруг не стал
+     * интерпритировать "" как ключ Или =value как ключ
+     * <p>
      * Не будет благодаря проверки на паттерн
      */
     @Test

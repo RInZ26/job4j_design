@@ -1,8 +1,7 @@
 package ru.job4j.generic;
 
 /**
- * Для использования MemStore
- * Класс - пустышка
+ * Для использования MemStore Класс - пустышка
  */
 public class RoleStore implements Store<Role> {
 

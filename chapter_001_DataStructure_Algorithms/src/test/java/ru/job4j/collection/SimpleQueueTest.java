@@ -1,11 +1,11 @@
 package ru.job4j.collection;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class SimpleQueueTest {
 

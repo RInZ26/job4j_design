@@ -1,6 +1,9 @@
 package ru.job4j.exam;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Analize {
 
@@ -12,16 +15,20 @@ public class Analize {
 	    previousUserMap.put(user.id, user);
 	}
 	for (User currentUser : current) {
-	    Optional<User> testedUserFromPreviousMap = Optional.ofNullable(previousUserMap.putIfAbsent(currentUser.id, currentUser));
+	    Optional<User> testedUserFromPreviousMap = Optional.ofNullable(
+		    previousUserMap.putIfAbsent(currentUser.id, currentUser));
 	    if (testedUserFromPreviousMap.isEmpty()) {
 		infoAboutCollections.added++;
-	    } else if (!testedUserFromPreviousMap.get().name.equals(currentUser.name)) {
+	    } else if (!testedUserFromPreviousMap.get().name
+		    .equals(currentUser.name)) {
 		infoAboutCollections.changed++;
 	    } else {
 		unchanged++;
 	    }
 	}
-	infoAboutCollections.deleted = previousUserMap.size() - infoAboutCollections.added - infoAboutCollections.changed - unchanged;
+	infoAboutCollections.deleted =
+		previousUserMap.size() - infoAboutCollections.added
+			- infoAboutCollections.changed - unchanged;
 	return infoAboutCollections;
     }
 

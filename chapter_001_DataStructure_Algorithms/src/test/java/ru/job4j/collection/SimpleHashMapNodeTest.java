@@ -10,15 +10,22 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SimpleHashMapNodeTest {
-    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka", prince = "Prince", balda = "balda";
+    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka",
+	    prince = "Prince", balda = "balda";
     Node<String, String> cursedNode;
     Iterator<Node<String, String>> cursedIterator;
 
     @Before
     public void setUp() {
 	cursedNode = new Node<String, String>(nastya, nastya.hashCode(), baka,
-		new Node<String, String>(ivan, ivan.hashCode(), prince,
-			new Node<String, String>(matvey, matvey.hashCode(), balda, null)));
+					      new Node<String, String>(ivan,
+								       ivan.hashCode(),
+								       prince,
+								       new Node<String, String>(
+									       matvey,
+									       matvey.hashCode(),
+									       balda,
+									       null)));
 	cursedIterator = cursedNode.iterator();
     }
 

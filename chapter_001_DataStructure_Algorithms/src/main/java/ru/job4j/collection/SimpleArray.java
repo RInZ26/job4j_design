@@ -5,15 +5,18 @@ import java.util.*;
 /**
  * Динамический вариант generic.SimpleArray
  *
- * @param <T> дженерик
+ * @param <T>
+ * 	дженерик
  */
 public class SimpleArray<T> implements Iterable<T> {
     /**
-     * Константа дефолтного размера коллекции для конструктора без параметров (подражание ArrayList)
+     * Константа дефолтного размера коллекции для конструктора без параметров
+     * (подражание ArrayList)
      */
     public static final int DEFAULT_SIZE = 10;
     /**
-     * Отражает "версию" коллекции. Если было внесено какое-то изменение, счетчик увеличивается. Используется для корректной работы итераторов
+     * Отражает "версию" коллекции. Если было внесено какое-то изменение,
+     * счетчик увеличивается. Используется для корректной работы итераторов
      */
     public int versionOfCollection;
     /**
@@ -22,8 +25,8 @@ public class SimpleArray<T> implements Iterable<T> {
     private Object[] data;
 
     /**
-     * Количество элементов, которые есть в data, аналог list.size
-     * и в то же время является аналогом pointer, чтоб мы знали, куда добавлять элементы
+     * Количество элементов, которые есть в data, аналог list.size и в то же
+     * время является аналогом pointer, чтоб мы знали, куда добавлять элементы
      */
     private int countOfElements;
 
@@ -37,7 +40,8 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * ~ кастомное значение
      *
-     * @param size кастомное значение размеры
+     * @param size
+     * 	кастомное значение размеры
      */
     public SimpleArray(int size) {
 	data = new Object[size];
@@ -46,17 +50,21 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Возвращает элемет, если index в норме
      *
-     * @param index индекс
+     * @param index
+     * 	индекс
+     *
      * @return Элемент или IndexOutOfBounds упадёт
      */
     public T get(int index) {
-	return index == Objects.checkIndex(index, countOfElements) ? (T) data[index] : null;
+	return index == Objects.checkIndex(index, countOfElements)
+	       ? (T) data[index] : null;
     }
 
     /**
      * Добавление элемента в коллекцию с поддержкой динамичесого расширения
      *
-     * @param model добавляемый элемент
+     * @param model
+     * 	добавляемый элемент
      */
     public void add(T model) {
 	if (countOfElements + 1 == data.length) {
@@ -88,7 +96,8 @@ public class SimpleArray<T> implements Iterable<T> {
 	    /**
 	     * Отслеживание изменений между версиями коллекций
 	     */
-	    private int currentVersionOfCollection = SimpleArray.this.versionOfCollection;
+	    private int currentVersionOfCollection =
+		    SimpleArray.this.versionOfCollection;
 
 	    /**
 	     * Ссылка на итерируемую коллекцию
@@ -102,7 +111,8 @@ public class SimpleArray<T> implements Iterable<T> {
 
 	    @Override
 	    public boolean hasNext() {
-		if (currentVersionOfCollection != SimpleArray.this.versionOfCollection) {
+		if (currentVersionOfCollection
+			!= SimpleArray.this.versionOfCollection) {
 		    throw new ConcurrentModificationException();
 		}
 		return pointer < size();

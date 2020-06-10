@@ -1,22 +1,25 @@
 package ru.job4j.collection;
 
-import java.util.*;
+import java.util.Calendar;
 
 /**
  * Класс - модель данных
  */
 public class User {
+    public String iq;
     private String name;
     private int age;
     private Calendar birthday;
-    public String iq;
 
     /**
      * Понтовый конструктор через сеттеры
      *
-     * @param name     ~
-     * @param age      ~
-     * @param birthday ~
+     * @param name
+     * 	~
+     * @param age
+     * 	~
+     * @param birthday
+     * 	~
      */
     public User(String name, int age, Calendar birthday) {
 	setName(name);

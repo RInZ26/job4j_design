@@ -26,34 +26,34 @@ public class SimpleArrayTest {
 
     @Test
     public void wrongIndexWhenAdd() {
-       assertFalse(stringSimpleArray.add("blabla"));
+	assertFalse(stringSimpleArray.add("blabla"));
     }
 
-    @Test (expected = IndexOutOfBoundsException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void wrongIndexWithGet() {
-        assertFalse(stringSimpleArray.remove(stringSimpleArray.size() + 1));
+	assertFalse(stringSimpleArray.remove(stringSimpleArray.size() + 1));
     }
 
     @Test
     public void set() {
-        integerSimpleArray.add(1);
-        integerSimpleArray.set(0, 2);
-        assertThat(integerSimpleArray.get(0), is(2));
+	integerSimpleArray.add(1);
+	integerSimpleArray.set(0, 2);
+	assertThat(integerSimpleArray.get(0), is(2));
     }
 
     @Test
     public void remove() {
-        integerSimpleArray.add(5);
-        integerSimpleArray.remove(0);
-        assertNull(integerSimpleArray.get(0));
+	integerSimpleArray.add(5);
+	integerSimpleArray.remove(0);
+	assertNull(integerSimpleArray.get(0));
     }
 
     @Test
     public void iterator() {
-        integerSimpleArray.add(3);
-        integerSimpleArray.add(2);
-        Iterator iterator = integerSimpleArray.iterator();
-        assertTrue(iterator.hasNext());
-        assertThat(iterator.next(), is(3));
+	integerSimpleArray.add(3);
+	integerSimpleArray.add(2);
+	Iterator iterator = integerSimpleArray.iterator();
+	assertTrue(iterator.hasNext());
+	assertThat(iterator.next(), is(3));
     }
 }

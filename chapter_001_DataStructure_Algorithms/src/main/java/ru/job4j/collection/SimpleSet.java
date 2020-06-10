@@ -3,8 +3,8 @@ package ru.job4j.collection;
 import java.util.Iterator;
 
 /**
- * Класс - простенький set, испольщуюзий SimpleArray
- * Гарантирует отсутствие дублей
+ * Класс - простенький set, испольщуюзий SimpleArray Гарантирует отсутствие
+ * дублей
  *
  * @author RinZ26
  */
@@ -31,7 +31,9 @@ public class SimpleSet<T> implements Iterable<T> {
     /**
      * Проверка есть ли такой элемент в data (уникальнось)
      *
-     * @param element элемент
+     * @param element
+     * 	элемент
+     *
      * @return ~
      */
     private boolean isUnique(T element) {

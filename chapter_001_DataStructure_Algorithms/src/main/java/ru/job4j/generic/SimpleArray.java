@@ -7,7 +7,8 @@ import java.util.Objects;
 /**
  * Класс - обертка для массивов
  *
- * @param <T> тип массива
+ * @param <T>
+ * 	тип массива
  */
 public class SimpleArray<T> implements Iterable<T> {
     /**
@@ -20,9 +21,11 @@ public class SimpleArray<T> implements Iterable<T> {
     private int pointer;
 
     /**
-     * Основной конструктор, где мы создаем массив объектов размером @param size
+     * Основной конструктор, где мы создаем массив объектов размером @param
+     * size
      *
-     * @param size размер массива
+     * @param size
+     * 	размер массива
      */
     public SimpleArray(int size) {
 	this.data = new Object[size];
@@ -31,7 +34,9 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Добавление элемента
      *
-     * @param model элемент
+     * @param model
+     * 	элемент
+     *
      * @return можно ли добавить
      */
     public boolean add(T model) {
@@ -45,8 +50,11 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Присвоение значения элементу
      *
-     * @param index - индекс
-     * @param model - новое значение
+     * @param index
+     * 	- индекс
+     * @param model
+     * 	- новое значение
+     *
      * @return успех операции в зависимости от isIndexValid
      */
     public boolean set(int index, T model) {
@@ -58,17 +66,20 @@ public class SimpleArray<T> implements Iterable<T> {
     }
 
     /**
-     * Удаление элемента из массива путем смещения всех ячеек влево и заNULLение последнего элемента
-     * pointer также уменьшается
+     * Удаление элемента из массива путем смещения всех ячеек влево и заNULLение
+     * последнего элемента pointer также уменьшается
      *
-     * @param index индекс удаляемого элемента
+     * @param index
+     * 	индекс удаляемого элемента
+     *
      * @return успех операции в зависимости от isIndexValid
      */
     public boolean remove(int index) {
 	boolean result = isIndexValid(index);
 	if (result) {
 	    if (data.length - 1 - index >= 0) {
-		System.arraycopy(data, index + 1, data, index, data.length - 1 - index);
+		System.arraycopy(data, index + 1, data, index,
+				 data.length - 1 - index);
 	    }
 	    data[data.length - 1] = null;
 	    pointer--;
@@ -79,7 +90,9 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Получение элемента по индексу с учетом isIndexValid
      *
-     * @param index - индекс
+     * @param index
+     * 	- индекс
+     *
      * @return элемент / null
      */
     public T get(int index) {
@@ -93,7 +106,9 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Проверка, что индекс валидный
      *
-     * @param index индекс
+     * @param index
+     * 	индекс
+     *
      * @return true/false;
      */
     private boolean isIndexValid(int index) {

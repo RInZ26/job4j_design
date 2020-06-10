@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
 import java.io.*;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -20,32 +19,48 @@ public class SpeakWithMe {
     private static boolean isTheEnd;
 
     public static void main(String[] args) {
-	wannaSpeak(Paths.get("C:\\projects\\SpeakWithMe\\systemAnswers.txt"), Paths.get("C:\\projects\\SpeakWithMe\\logOfConversation.txt"));
+	wannaSpeak(Paths.get("C:\\projects\\SpeakWithMe\\systemAnswers.txt"),
+		   Paths.get(
+			   "C:\\projects\\SpeakWithMe\\logOfConversation.txt"));
     }
 
     /**
-     * Запись в коллекцию из файл при частом обращении - оправдано! Потому что операция чтения дорогая.
-     * Держать стрим на запись долго - не надо, поэтому лог формируется в конце в отдельном минитрае
-     * Используется паттерн dispatcher в том или ином виде. Логика - избегать ифы и изменять код при расширении не здесь, а в диспатчере
-     * По поводу работы самого автоответчика:
-     * Есть два глобал булиана: isTheEnd - завершение работы, userDesireOfSpeaking - желание юзера получать ответы от системы
+     * Запись в коллекцию из файл при частом обращении - оправдано! Потому что
+     * операция чтения дорогая. Держать стрим на запись долго - не надо, поэтому
+     * лог формируется в конце в отдельном минитрае Используется паттерн
+     * dispatcher в том или ином виде. Логика - избегать ифы и изменять код при
+     * расширении не здесь, а в диспатчере По поводу работы самого
+     * автоответчика: Есть два глобал булиана: isTheEnd - завершение работы,
+     * userDesireOfSpeaking - желание юзера получать ответы от системы
      * Поддерживается три системные команды - они описаны в диспатчере.
      */
-    public static void wannaSpeak(Path pathSourceOfAnswers, Path pathLogOfConversation) {
+    public static void wannaSpeak(Path pathSourceOfAnswers,
+	    Path pathLogOfConversation) {
 	List<String> listOfSystemAnswers;
 	List<String> logOfConversation;
-	try (BufferedReader userReader = new BufferedReader(new InputStreamReader(System.in))) {
-	    DispatcherUserAnswers dispatcherUserAnswers = new DispatcherUserAnswers();
+	try (BufferedReader userReader = new BufferedReader(
+		new InputStreamReader(System.in))) {
+	    DispatcherUserAnswers dispatcherUserAnswers =
+		    new DispatcherUserAnswers();
 	    listOfSystemAnswers = loadFile(pathSourceOfAnswers);
 	    logOfConversation = new ArrayList<>();
 	    String userQuestion, systemAnswer;
 	    while (!isTheEnd) {
 		System.out.println("Write something: ");
 		userQuestion = userReader.readLine();
-		System.out.println(systemAnswer = dispatcherUserAnswers.mapOfSystemInteractingWithUser.getOrDefault(userQuestion.toLowerCase(), dispatcherUserAnswers.defaultSystemAnswer(listOfSystemAnswers)).get());
-		logOfConversation.add(String.format("%s  -  %s", userQuestion, systemAnswer));
+		System.out.println(systemAnswer =
+					   dispatcherUserAnswers.mapOfSystemInteractingWithUser
+						   .getOrDefault(userQuestion
+									 .toLowerCase(),
+								 dispatcherUserAnswers
+									 .defaultSystemAnswer(
+										 listOfSystemAnswers))
+						   .get());
+		logOfConversation.add(String.format("%s  -  %s", userQuestion,
+						    systemAnswer));
 	    }
-	    try (PrintWriter writerLog = new PrintWriter(new FileWriter(pathLogOfConversation.toString()))) {
+	    try (PrintWriter writerLog = new PrintWriter(
+		    new FileWriter(pathLogOfConversation.toString()))) {
 		logOfConversation.forEach(writerLog::println);
 	    } catch (Exception e) {
 		System.out.println("load log");
@@ -58,24 +73,28 @@ public class SpeakWithMe {
     }
 
     /**
-     * Проверка, что файл ответов существует. Boolean тут ни к чему по сути, но хочется поставить
+     * Проверка, что файл ответов существует. Boolean тут ни к чему по сути, но
+     * хочется поставить
      *
-     * @param path путь до файла
+     * @param path
+     * 	путь до файла
      */
     private static boolean isExistAndFile(Path path) {
 	if (!path.toFile().exists() && !path.toFile().isFile()) {
-	    throw new IllegalArgumentException("File of answers doesn't exist or was input wrong");
+	    throw new IllegalArgumentException(
+		    "File of answers doesn't exist or was input wrong");
 	}
 	return true;
     }
 
     /**
-     * Заполнение коллекции ответов из файла с внутренней проверкой на возможность оного
-     * Почему она вообще нужна - читай speakWithMe
+     * Заполнение коллекции ответов из файла с внутренней проверкой на
+     * возможность оного Почему она вообще нужна - читай speakWithMe
      */
     private static List<String> loadFile(Path pathAnswerFile) {
 	isExistAndFile(pathAnswerFile);
-	try (BufferedReader reader = new BufferedReader(new FileReader(pathAnswerFile.toString()))) {
+	try (BufferedReader reader = new BufferedReader(
+		new FileReader(pathAnswerFile.toString()))) {
 	    return reader.lines().collect(Collectors.toList());
 	} catch (Exception e) {
 	    System.out.println("problem with load file");
@@ -86,14 +105,16 @@ public class SpeakWithMe {
 
     /**
      * Используем хитрый диспатч вместо свичей https://github.com/peterarsentev/code_quality_principles
-     * У нас есть мапа по ключевым словам, за которыми закреплены определенные действия, выглядит неплохо, хотя и пришлось вынести булианы в global
+     * У нас есть мапа по ключевым словам, за которыми закреплены определенные
+     * действия, выглядит неплохо, хотя и пришлось вынести булианы в global
      */
     private static class DispatcherUserAnswers {
-	Map<String, Supplier<String>> mapOfSystemInteractingWithUser = new HashMap<>();
 	private static final String FINISH_WORD = "закончить";
 	private static final String STOP_WORD = "стоп";
 	private static final String CONTINUE_WORD = "продолжить";
 	private static final String SYSTEM_SILENCED = "";
+	Map<String, Supplier<String>> mapOfSystemInteractingWithUser =
+		new HashMap<>();
 
 	DispatcherUserAnswers() {
 	    init();
@@ -101,13 +122,16 @@ public class SpeakWithMe {
 
 	// Init all system words and it functions
 	void init() {
-	    mapOfSystemInteractingWithUser.put(FINISH_WORD, finishWordSupplier());
-	    mapOfSystemInteractingWithUser.put(CONTINUE_WORD, continueWordSupplier());
+	    mapOfSystemInteractingWithUser
+		    .put(FINISH_WORD, finishWordSupplier());
+	    mapOfSystemInteractingWithUser
+		    .put(CONTINUE_WORD, continueWordSupplier());
 	    mapOfSystemInteractingWithUser.put(STOP_WORD, stopWordSupplier());
 	}
 
 	/**
-	 * Этот метод и далее просто заносят логику действий, которые должны выполняться при вводе команды пользователем
+	 * Этот метод и далее просто заносят логику действий, которые должны
+	 * выполняться при вводе команды пользователем
 	 */
 	private Supplier<String> finishWordSupplier() {
 	    return () -> {
@@ -132,13 +156,18 @@ public class SpeakWithMe {
 	}
 
 	/**
-	 * Эта штука выполняется, когда ничего не нашлось в мапе посредством getOrDefault
+	 * Эта штука выполняется, когда ничего не нашлось в мапе посредством
+	 * getOrDefault
 	 *
-	 * @param listOfSystemAnswers ссылка на коллекцию, с которой работаем
+	 * @param listOfSystemAnswers
+	 * 	ссылка на коллекцию, с которой работаем
 	 */
-	private Supplier<String> defaultSystemAnswer(List<String> listOfSystemAnswers) {
+	private Supplier<String> defaultSystemAnswer(
+		List<String> listOfSystemAnswers) {
 	    Random rnd = new Random();
-	    return () -> userDesireOfSpeaking ? listOfSystemAnswers.get(rnd.nextInt(listOfSystemAnswers.size())) : SYSTEM_SILENCED;
+	    return () -> userDesireOfSpeaking ? listOfSystemAnswers
+		    .get(rnd.nextInt(listOfSystemAnswers.size()))
+					      : SYSTEM_SILENCED;
 	}
 
     }

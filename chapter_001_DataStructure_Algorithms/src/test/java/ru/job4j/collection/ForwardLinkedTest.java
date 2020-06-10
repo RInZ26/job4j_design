@@ -55,13 +55,15 @@ public class ForwardLinkedTest {
 	assertThat(it.next(), is(2));
 	assertThat(it.next(), is(1));
     }
+
     @Test
     public void whenRevertEmpty() {
 	ForwardLinked<Integer> linked = new ForwardLinked<>();
 	linked.revert();
 	Iterator<Integer> it = linked.iterator();
-    	assertFalse(it.hasNext());
+	assertFalse(it.hasNext());
     }
+
     @Test
     public void whenRevertWithOneElement() {
 	ForwardLinked<Integer> linked = new ForwardLinked<>();

@@ -15,14 +15,19 @@ public class ReadBufferLines {
 	 * autoflush флашит при использовании PRINTLN
 	 */
 	Path pathSource = Paths.get("C:\\test\\source.txt");
-	try (BufferedReader reader = new BufferedReader(new FileReader(pathSource.toString()));
-	     PrintWriter writer = new PrintWriter(new FileWriter(pathSource.toString()), true)) {
-	    List<String> sourceList = Arrays.asList("МетодLines ЖуткоКОВАРЕН".split(" "));
-	    sourceList.forEach(line -> writer.print(line + System.lineSeparator())); // запись в файл
-	   // writer.close();
+	try (BufferedReader reader = new BufferedReader(
+		new FileReader(pathSource.toString()));
+	     PrintWriter writer = new PrintWriter(
+		     new FileWriter(pathSource.toString()), true)) {
+	    List<String> sourceList = Arrays
+		    .asList("МетодLines ЖуткоКОВАРЕН".split(" "));
+	    sourceList.forEach(line -> writer
+		    .print(line + System.lineSeparator())); // запись в файл
+	    // writer.close();
 
 	    System.out.println(reader.lines().findFirst().get()); //МетодLines
-	    System.out.println(reader.lines().findFirst().get()); // ?? ЖуткоКоварен
+	    System.out.println(
+		    reader.lines().findFirst().get()); // ?? ЖуткоКоварен
 	} catch (Exception e) {
 	    System.out.println("reader / writer init");
 	    e.printStackTrace();

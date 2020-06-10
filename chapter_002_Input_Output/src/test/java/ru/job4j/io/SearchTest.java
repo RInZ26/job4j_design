@@ -1,6 +1,5 @@
 package ru.job4j.io;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -10,9 +9,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
-
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class SearchTest {
     @Rule
@@ -32,7 +30,8 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = ".txt";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Arrays.asList(txtPath1, txtPath2)));
+	assertThat(Search.search(rootPath, extensionOfFile),
+		   is(Arrays.asList(txtPath1, txtPath2)));
     }
 
     @Test
@@ -49,7 +48,8 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = "";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Arrays.asList(txtPath1, txtPath2, jsPath1)));
+	assertThat(Search.search(rootPath, extensionOfFile),
+		   is(Arrays.asList(txtPath1, txtPath2, jsPath1)));
     }
 
     @Test
@@ -66,6 +66,7 @@ public class SearchTest {
 	    e.printStackTrace();
 	}
 	extensionOfFile = ".docx";
-	assertThat(Search.search(rootPath, extensionOfFile), is(Collections.emptyList()));
+	assertThat(Search.search(rootPath, extensionOfFile),
+		   is(Collections.emptyList()));
     }
 }

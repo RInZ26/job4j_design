@@ -11,7 +11,9 @@ public class Converter {
     /**
      * Возвращает итератор, перебирающий все элементы из различных итераторов
      *
-     * @param it итератор итераторов
+     * @param it
+     * 	итератор итераторов
+     *
      * @return ~
      */
     Iterator<Integer> convert(Iterator<Iterator<Integer>> it) {

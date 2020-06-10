@@ -16,7 +16,9 @@ public final class MemStore<T extends Base> implements Store<T> {
 
     /**
      * Добавление элемента
-     * @param model элемент
+     *
+     * @param model
+     * 	элемент
      */
     @Override
     public void add(T model) {
@@ -25,8 +27,12 @@ public final class MemStore<T extends Base> implements Store<T> {
 
     /**
      * Замена элемента по его id
-     * @param id тянется из Base
-     * @param model заменяющий элемент
+     *
+     * @param id
+     * 	тянется из Base
+     * @param model
+     * 	заменяющий элемент
+     *
      * @return true - операция удалась, false - такого id нет
      */
     @Override
@@ -40,26 +46,32 @@ public final class MemStore<T extends Base> implements Store<T> {
     }
 
     /**
-     * Удаление элемента по id
-     * Т.к. нельзя создать что-то вроде new Base(id) (с учетом переопределения equals в нём), то удаление через list.remove(Object) не выглядит хорошим
-     * Да, можно воспользоваться и findById, но особой разницы между этим и list.remove(index) - не вижу.
-     * @param id - тянется с Base
+     * Удаление элемента по id Т.к. нельзя создать что-то вроде new Base(id) (с
+     * учетом переопределения equals в нём), то удаление через
+     * list.remove(Object) не выглядит хорошим Да, можно воспользоваться и
+     * findById, но особой разницы между этим и list.remove(index) - не вижу.
+     *
+     * @param id
+     * 	- тянется с Base
+     *
      * @return перация удалась, false - такого id нет
      */
     @Override
     public boolean delete(String id) {
-        int indexOfReplacedElement = findIndexById(id);
-        if (indexOfReplacedElement != -1) {
-            mem.remove(indexOfReplacedElement);
-            return true;
-        }
-        return false;
+	int indexOfReplacedElement = findIndexById(id);
+	if (indexOfReplacedElement != -1) {
+	    mem.remove(indexOfReplacedElement);
+	    return true;
+	}
+	return false;
     }
 
     /**
      * Поиск элемента по id (которое заложено в Base)
      *
-     * @param id - Base.id
+     * @param id
+     * 	- Base.id
+     *
      * @return найденный элемент / null
      */
     @Override

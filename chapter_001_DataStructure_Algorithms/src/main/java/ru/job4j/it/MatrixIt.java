@@ -25,21 +25,22 @@ public class MatrixIt implements Iterator<Integer> {
     /**
      * Основной конструктор
      *
-     * @param data - иттерируемый массив
+     * @param data
+     * 	- иттерируемый массив
      */
     public MatrixIt(int[][] data) {
 	this.data = data;
     }
 
     /**
-     * Проверка, есть ли следующая ячейка
-     * Если массив пустой - скипаем
+     * Проверка, есть ли следующая ячейка Если массив пустой - скипаем
      *
      * @return есть : нет
      */
     @Override
     public boolean hasNext() {
-	while (row < data.length && (data[row].length == 0 || column == data[row].length)) {
+	while (row < data.length && (data[row].length == 0
+		|| column == data[row].length)) {
 	    row++;
 	    column = 0;
 	}

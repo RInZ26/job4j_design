@@ -8,7 +8,8 @@ import static org.junit.Assert.*;
 
 public class SimpleHashMapTest {
     SimpleHashMap<String, String> blessedMap;
-    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka", prince = "Prince", balda = "balda";
+    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka",
+	    prince = "Prince", balda = "balda";
 
     @Before
     public void setUp() throws Exception {
@@ -38,20 +39,23 @@ public class SimpleHashMapTest {
     public void insertElementsWithSameHashingBySimpleHashMap() {
 	blessedMap.insert(nastya, balda);
 	blessedMap.insert(ivan, prince);
-	blessedMap.insert(matvey, baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
+	blessedMap.insert(matvey,
+			  baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
 	assertThat(blessedMap.getSize(), is(3));
 	assertThat(blessedMap.get(matvey), is(baka));
 	assertThat(blessedMap.get(ivan), is(prince));
     }
 
     /**
-     * Когда у нас создался внутренний linkedList и мы добавляем по тому же ключу
+     * Когда у нас создался внутренний linkedList и мы добавляем по тому же
+     * ключу
      */
     @Test
     public void insertElementsWithSameKeyWhenInnerLinkedListIsExisting() {
 	blessedMap.insert(nastya, balda);
 	blessedMap.insert(ivan, prince);
-	blessedMap.insert(matvey, baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
+	blessedMap.insert(matvey,
+			  baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
 	blessedMap.insert(matvey, balda);
 	assertThat(blessedMap.getSize(), is(3));
 	assertThat(blessedMap.get(matvey), is(baka));
@@ -69,7 +73,8 @@ public class SimpleHashMapTest {
 
     @Test
     public void simpleDeleteWhenMapHasMoreThan1ElementInInnerLinkedList() {
-	blessedMap.insert(matvey, baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
+	blessedMap.insert(matvey,
+			  baka); //matvey has same hashing(IN SIMPLEHASHMAP!) like ivan
 	blessedMap.insert(ivan, prince);
 	blessedMap.delete(matvey);
 	assertNull(blessedMap.get(matvey));

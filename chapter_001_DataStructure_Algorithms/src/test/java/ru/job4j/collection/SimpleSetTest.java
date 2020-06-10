@@ -6,7 +6,8 @@ import org.junit.Test;
 import java.util.Iterator;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public class SimpleSetTest {
     SimpleSet<String> stringSimpleSet;
@@ -15,7 +16,7 @@ public class SimpleSetTest {
 
     @Before
     public void setUp() {
-        stringSimpleSet = new SimpleSet<>();
+	stringSimpleSet = new SimpleSet<>();
     }
 
     @Test
@@ -28,12 +29,12 @@ public class SimpleSetTest {
 
     @Test
     public void addCopies() {
-        stringSimpleSet.add(suno);
-        stringSimpleSet.add(rin);
-        stringSimpleSet.add(suno);
-        Iterator<String> tempIterator = stringSimpleSet.iterator();
-        assertThat(tempIterator.next(), is(suno));
-        assertThat(tempIterator.next(), is(rin));
-        assertFalse(tempIterator.hasNext());
+	stringSimpleSet.add(suno);
+	stringSimpleSet.add(rin);
+	stringSimpleSet.add(suno);
+	Iterator<String> tempIterator = stringSimpleSet.iterator();
+	assertThat(tempIterator.next(), is(suno));
+	assertThat(tempIterator.next(), is(rin));
+	assertFalse(tempIterator.hasNext());
     }
 }

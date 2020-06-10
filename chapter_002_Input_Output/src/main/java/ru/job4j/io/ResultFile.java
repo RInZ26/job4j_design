@@ -18,7 +18,8 @@ public class ResultFile {
     }
 
     public static void main(String[] args) {
-	try (FileOutputStream out = new FileOutputStream("multiplicationTable.txt")) {
+	try (FileOutputStream out = new FileOutputStream(
+		"multiplicationTable.txt")) {
 	    for (int[] intArray : getMultiplicationTable(9)) {
 		for (int i : intArray) {
 		    out.write((i + " ").getBytes());
@@ -30,7 +31,8 @@ public class ResultFile {
 	}
     }
 
-    public static boolean writeInFile(String filename, Object[] data, String splitter) {
+    public static boolean writeInFile(String filename, Object[] data,
+	    String splitter) {
 	try (FileOutputStream out = new FileOutputStream(filename)) {
 	    for (Object o : data) {
 		out.write((o.toString() + splitter).getBytes());

@@ -8,12 +8,8 @@ import java.util.function.Predicate;
  */
 public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     /**
-     * Версия коллекции, для правильной работы итератора с выбросом ConcurrentModificationException
-     */
-    private int versionOfCollection;
-
-    /**
-     * Размер table по умолчанию, а вообще он должен быть строго кратен 2 для корректной работы хэширования
+     * Размер table по умолчанию, а вообще он должен быть строго кратен 2 для
+     * корректной работы хэширования
      */
     public static final int DEFAULT_SIZE = 16;
     /**
@@ -21,12 +17,18 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
      */
     public static final float DEFAULT_LOAD_FACTOR = 0.75f;
     /**
+     * Версия коллекции, для правильной работы итератора с выбросом
+     * ConcurrentModificationException
+     */
+    private int versionOfCollection;
+    /**
      * Массив односвязных списков - парлия на table из HashMap
      */
     private Node<K, V>[] table;
     /**
-     * Процент "заполнения" table. При достижении определенного уровня - нужно расширение таблицы и перехешировка
-     * элементов, потому что она будет зависеть от её(table) размера
+     * Процент "заполнения" table. При достижении определенного уровня - нужно
+     * расширение таблицы и перехешировка элементов, потому что она будет
+     * зависеть от её(table) размера
      */
     private float loadFactor;
 
@@ -41,8 +43,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     private int countOfUsedBaskets = 0;
 
     /**
-     * Конструктор c произвольным процентом заполнения и с дефолтным
-     * Без валидации входных данных
+     * Конструктор c произвольным процентом заполнения и с дефолтным Без
+     * валидации входных данных
      */
     public SimpleHashMap(float loadFactor) {
 	table = new Node[DEFAULT_SIZE];
@@ -61,14 +63,17 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Вставка элемента
-     * deepNode - если у нас по адресу в таблице уже что-то лежит, мы рассматриваем это сразу как связный список
+     * Вставка элемента deepNode - если у нас по адресу в таблице уже что-то
+     * лежит, мы рассматриваем это сразу как связный список
      * <p>
-     * Если в таблице по индесу ничего нет - значит мы впервые её задействуем (нужно для countOfBaskets), иначе ищем последний элемент в списке
-     * с проверкой на совпадение с добавляемым
-     * Если в if с предикатом мы нашли совпадение (true), то значит такой элемент в связном списке уже есть и возвращаем false
+     * Если в таблице по индесу ничего нет - значит мы впервые её задействуем
+     * (нужно для countOfBaskets), иначе ищем последний элемент в списке с
+     * проверкой на совпадение с добавляемым Если в if с предикатом мы нашли
+     * совпадение (true), то значит такой элемент в связном списке уже есть и
+     * возвращаем false
      * <p>
-     * Если перед добавлением, происходит переполнение loadFactor - расширяем таблицу и перехэшируем элементы
+     * Если перед добавлением, происходит переполнение loadFactor - расширяем
+     * таблицу и перехэшируем элементы
      */
     public boolean insert(K key, V value) {
 	if (table.length * loadFactor <= countOfUsedBaskets) {
@@ -79,7 +84,10 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	Node<K, V> newNode = new Node<>(key, hash, value, null);
 	if (table[indexOfTable] != null) {
 	    Node<K, V> deepNode = table[indexOfTable];
-	    if (checkRuleInInnerLinkedList(deepNode.iterator(), o -> o.hash == newNode.hash && o.key.equals(newNode.key)) != null) {
+	    if (checkRuleInInnerLinkedList(deepNode.iterator(),
+					   o -> o.hash == newNode.hash && o.key
+						   .equals(newNode.key))
+		    != null) {
 		return false;
 	    } else {
 		getLastNode(table[indexOfTable]).next = newNode;
@@ -94,14 +102,18 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Возвращает элемент, если такой есть. Если там список, то бежим по нему в поисках
+     * Возвращает элемент, если такой есть. Если там список, то бежим по нему в
+     * поисках
      */
     public V get(K key) {
 	int hash = key.hashCode();
 	int index = getIndexByHash(hash);
 	if (table[index] != null) {
 	    Iterator<Node<K, V>> nodeIterator = table[index].iterator();
-	    Node<K, V> nodeInLinkedList = checkRuleInInnerLinkedList(nodeIterator, o -> o.hash == hash && o.key.equals(key));
+	    Node<K, V> nodeInLinkedList =
+		    checkRuleInInnerLinkedList(nodeIterator,
+					       o -> o.hash == hash && o.key
+						       .equals(key));
 	    if (nodeInLinkedList != null) {
 		return nodeInLinkedList.value;
 	    }
@@ -110,21 +122,28 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Удаление элемента путём использования замудренного remove в итераторе, который вряд ли вообще заработает
-     * Используется костыль: Если элемент в списке был изначально один, то remove у итератора в Node не сможет удалить сам себя
-     * Связано это с тем, что у нас нет "фейковых" стартовых Node для удобной навигации по cвязным спискам.
-     * Поэтому, если возникает подобная ситуация (удаление через remove самого себя), элементу в методе remove заNullяются ключ и значение, что является
-     * маркером для удаления всего списка уже непосредственно в методе delete
+     * Удаление элемента путём использования замудренного remove в итераторе,
+     * который вряд ли вообще заработает Используется костыль: Если элемент в
+     * списке был изначально один, то remove у итератора в Node не сможет
+     * удалить сам себя Связано это с тем, что у нас нет "фейковых" стартовых
+     * Node для удобной навигации по cвязным спискам. Поэтому, если возникает
+     * подобная ситуация (удаление через remove самого себя), элементу в методе
+     * remove заNullяются ключ и значение, что является маркером для удаления
+     * всего списка уже непосредственно в методе delete
      */
     public boolean delete(K key) {
 	int hash = key.hashCode();
 	int index = getIndexByHash(hash);
 	if (table[index] != null) {
 	    Iterator<Node<K, V>> nodeIterator = table[index].iterator();
-	    Node<K, V> nodeRoadToDelete = checkRuleInInnerLinkedList(nodeIterator, o -> o.hash == hash && o.key.equals(key));
+	    Node<K, V> nodeRoadToDelete =
+		    checkRuleInInnerLinkedList(nodeIterator,
+					       o -> o.hash == hash && o.key
+						       .equals(key));
 	    if (nodeRoadToDelete != null) {
 		nodeIterator.remove();
-		if (table[index].key == null && table[index].value == null) { //костыль
+		if (table[index].key == null
+			&& table[index].value == null) { //костыль
 		    table[index] = null;
 		    countOfUsedBaskets--;
 		}
@@ -137,7 +156,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Погружаемся в глубину связного списка в table и возвращаем последнюю ноду
+     * Погружаемся в глубину связного списка в table и возвращаем последнюю
+     * ноду
      */
     private Node<K, V> getLastNode(Node<K, V> deepNode) {
 	var nodeIterator = deepNode.iterator();
@@ -149,10 +169,11 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Проверка связного списка на условие
-     * Возвращает первый Node, которое выполнило условие предиката или null, если никто не выполнил
+     * Проверка связного списка на условие Возвращает первый Node, которое
+     * выполнило условие предиката или null, если никто не выполнил
      */
-    private Node<K, V> checkRuleInInnerLinkedList(Iterator<Node<K, V>> iterator, Predicate<Node<K, V>> rule) {
+    private Node<K, V> checkRuleInInnerLinkedList(Iterator<Node<K, V>> iterator,
+	    Predicate<Node<K, V>> rule) {
 	Node<K, V> problemNode;
 	while (iterator.hasNext()) {
 	    problemNode = iterator.next();
@@ -164,20 +185,20 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     }
 
     /**
-     * Преобразование хэшкода для определения его позиции в table
-     * table.length - 1, видимо из-за того, что в 0 принято хранить null ключи и фактический размер table для "true" элементов на один меньше
+     * Преобразование хэшкода для определения его позиции в table table.length -
+     * 1, видимо из-за того, что в 0 принято хранить null ключи и фактический
+     * размер table для "true" элементов на один меньше
      */
     private int getIndexByHash(int hash) {
 	return hash & table.length - 1;
     }
 
     /**
-     * Расширяем таблицу, если достигли/привысили loadFactor
-     * Расширяем строго по степеням двойки, чтобы правильно хэшировать
-     * Затем перехешируем её элементы
-     * Учитывается наличие связных списков внутри
-     * oldTable - содержит ссылку на старую
-     * Table же мы заново запоняем через add, так как там вся логика
+     * Расширяем таблицу, если достигли/привысили loadFactor Расширяем строго по
+     * степеням двойки, чтобы правильно хэшировать Затем перехешируем её
+     * элементы Учитывается наличие связных списков внутри oldTable - содержит
+     * ссылку на старую Table же мы заново запоняем через add, так как там вся
+     * логика
      */
     private void resizeAndReHashTable() {
 	countOfUsedBaskets = 0;
@@ -207,7 +228,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	    /**
 	     * Отслеживание версионности
 	     */
-	    int currentVersionOfCollection = SimpleHashMap.this.versionOfCollection;
+	    int currentVersionOfCollection =
+		    SimpleHashMap.this.versionOfCollection;
 	    /**
 	     * Количество элементов, пройденных итератором
 	     */
@@ -219,7 +241,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	    /**
 	     * Если ячейка в таблице является связным списком, то указывает на следующую ноду
 	     */
-	    Iterator<Node<K, V>> iteratorOfTheCurrentInnerLinkedList = Collections.emptyIterator();
+	    Iterator<Node<K, V>> iteratorOfTheCurrentInnerLinkedList =
+		    Collections.emptyIterator();
 
 	    /**
 	     * hasNext, который кроме всего остального осуществляет сдвиги поинтеров.
@@ -228,12 +251,19 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	     */
 	    @Override
 	    public boolean hasNext() {
-		if (currentVersionOfCollection != SimpleHashMap.this.versionOfCollection) {
+		if (currentVersionOfCollection
+			!= SimpleHashMap.this.versionOfCollection) {
 		    throw new ConcurrentModificationException();
 		}
-		while ((table[pointerOnIndexOfTable] == null || !iteratorOfTheCurrentInnerLinkedList.hasNext()) && pointerOnIndexOfTable < table.length - 1) {
+		while ((table[pointerOnIndexOfTable] == null
+			|| !iteratorOfTheCurrentInnerLinkedList.hasNext())
+			&& pointerOnIndexOfTable < table.length - 1) {
 		    pointerOnIndexOfTable++;
-		    iteratorOfTheCurrentInnerLinkedList = table[pointerOnIndexOfTable] == null ? Collections.emptyIterator() : table[pointerOnIndexOfTable].iterator();
+		    iteratorOfTheCurrentInnerLinkedList =
+			    table[pointerOnIndexOfTable] == null ? Collections
+				    .emptyIterator()
+								 : table[pointerOnIndexOfTable]
+				    .iterator();
 		}
 		return countOfGotElements < countOfElements;
 	    }
@@ -253,8 +283,10 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
     /**
      * Реализация узла для односвязного списка
      *
-     * @param <K> key type
-     * @param <V> value type
+     * @param <K>
+     * 	key type
+     * @param <V>
+     * 	value type
      */
     public static class Node<K, V> implements Iterable<Node<K, V>> {
 	/**
@@ -270,7 +302,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 	 */
 	int hash;
 	/**
-	 * Ссылка на следующий узел (реализация односвязного списка для SimpleMap)
+	 * Ссылка на следующий узел (реализация односвязного списка для
+	 * SimpleMap)
 	 */
 	Node<K, V> next;
 
@@ -323,7 +356,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 		/**
 		 * Указатель на элемент перед pointerCurrentElement, то есть на элемент перед элементом, который нужно удалить
 		 */
-		Node<K, V> pointerBeforeCurrentElement = new Node<>(pointerCurrentElement);
+		Node<K, V> pointerBeforeCurrentElement =
+			new Node<>(pointerCurrentElement);
 		/**
 		 * Флаг, удаляли ли мы после next или нет. Не допускает повторные вызовы remove без вызова next
 		 */
@@ -339,7 +373,8 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 		    if (!hasNext()) {
 			throw new NoSuchElementException();
 		    }
-		    pointerBeforeCurrentElement = pointerBeforeCurrentElement.next;
+		    pointerBeforeCurrentElement =
+			    pointerBeforeCurrentElement.next;
 		    pointerCurrentElement = pointerCurrentElement.next;
 		    removed = false;
 		    return pointerCurrentElement;
@@ -362,11 +397,16 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 			if (pointerCurrentElement.equals(Node.this)) {
 			    if (hasNext()) {
 				Node.this.key = pointerCurrentElement.next.key;
-				Node.this.value = pointerCurrentElement.next.value;
-				Node.this.hash = pointerCurrentElement.next.hash;
-				Node.this.next = pointerCurrentElement.next.next;
-				pointerCurrentElement = new Node<K, V>(Node.this);
-				pointerBeforeCurrentElement = new Node<K, V>(pointerCurrentElement);
+				Node.this.value =
+					pointerCurrentElement.next.value;
+				Node.this.hash =
+					pointerCurrentElement.next.hash;
+				Node.this.next =
+					pointerCurrentElement.next.next;
+				pointerCurrentElement =
+					new Node<K, V>(Node.this);
+				pointerBeforeCurrentElement =
+					new Node<K, V>(pointerCurrentElement);
 			    } else {
 				Node.this.value = null;
 				Node.this.key = null;
@@ -375,9 +415,11 @@ public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 			    return;
 			}
 			removed = true;
-			Node<K, V> nextNodeForCurrentNode = hasNext() ? pointerCurrentElement.next : null;
+			Node<K, V> nextNodeForCurrentNode =
+				hasNext() ? pointerCurrentElement.next : null;
 			pointerBeforeCurrentElement.next.next = null;
-			pointerBeforeCurrentElement.next = nextNodeForCurrentNode;
+			pointerBeforeCurrentElement.next =
+				nextNodeForCurrentNode;
 			pointerCurrentElement = pointerBeforeCurrentElement;
 		    } else {
 			throw new IllegalStateException();

@@ -14,18 +14,21 @@ import java.util.stream.Collectors;
  */
 public class Config {
     /**
-     * Регулярка для проверки на соответствие записи в виде что-то=что-то, иначе говоря - записи конфигурации
+     * Регулярка для проверки на соответствие записи в виде что-то=что-то, иначе
+     * говоря - записи конфигурации
      */
-    private static final Pattern PATTERN_FOR_CONFIG_RECORD = Pattern.compile("\\s*\\w+\\s*=\\s*\\w+\\s*");
+    private static final Pattern PATTERN_FOR_CONFIG_RECORD =
+	    Pattern.compile("\\s*\\w+\\s*=\\s*\\w+\\s*");
     /**
-     * Путь к файлу
-     * "final для Map, чтобы не затереть мапу случаем. final для path указывает,
-     * что Config работает только с один файлом настроек. Это похоже на класс Properties,
-     * который также работает только с одним файлом настроек"(с)
+     * Путь к файлу "final для Map, чтобы не затереть мапу случаем. final для
+     * path указывает, что Config работает только с один файлом настроек. Это
+     * похоже на класс Properties, который также работает только с одним файлом
+     * настроек"(с)
      */
     private final String path;
     /**
-     * Мапа для хранения настроек и их параметров Ключ - имя настройки, значение - значаение настройки
+     * Мапа для хранения настроек и их параметров Ключ - имя настройки, значение
+     * - значаение настройки
      */
     private final Map<String, String> mapOfProperties = new HashMap<>();
 
@@ -34,18 +37,22 @@ public class Config {
     }
 
     /**
-     * Заполнение нашей мапы информацией из файла по пути filePath
-     * Игнорируем пустые строки и комментарии  в виде #
-     * Через стрим фильтруем его по паттерну.
-     *      * Учитываются случаи, когда ничего=значение, ключ=ничего
-     *      * А так же пробелы идиотские в любом месте
+     * Заполнение нашей мапы информацией из файла по пути filePath Игнорируем
+     * пустые строки и комментарии  в виде # Через стрим фильтруем его по
+     * паттерну. * Учитываются случаи, когда ничего=значение, ключ=ничего * А
+     * так же пробелы идиотские в любом месте
      */
     public void load() {
 	try (BufferedReader in = new BufferedReader(new FileReader(path))) {
-	    mapOfProperties.putAll(in.lines().filter(o -> PATTERN_FOR_CONFIG_RECORD.matcher(o).matches()).map(o -> {
-		String[] splittedO = o.split("=");
-		return new Holder(splittedO[0], splittedO.length > 1 ? splittedO[1] : null);
-	    }).collect(Collectors.toMap(o -> o.key.trim(), o -> o.value.trim())));
+	    mapOfProperties.putAll(in.lines()
+				     .filter(o -> PATTERN_FOR_CONFIG_RECORD
+					     .matcher(o).matches()).map(o -> {
+			String[] splittedO = o.split("=");
+			return new Holder(splittedO[0],
+					  splittedO.length > 1 ? splittedO[1]
+							       : null);
+		    }).collect(Collectors.toMap(o -> o.key.trim(),
+						o -> o.value.trim())));
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -62,7 +69,6 @@ public class Config {
 
     /**
      * Проверка содержится ли ключ
-     *
      */
     public boolean containsKey(String key) {
 	return mapOfProperties.containsKey(key);

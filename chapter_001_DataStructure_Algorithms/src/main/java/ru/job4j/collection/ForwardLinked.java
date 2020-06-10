@@ -12,7 +12,8 @@ public class ForwardLinked<T> implements Iterable<T> {
     /**
      * Добавление элемента с использованием findLast
      *
-     * @param value ~
+     * @param value
+     * 	~
      */
     public void add(T value) {
 	Node<T> node = new Node<T>(value, null);
@@ -36,9 +37,8 @@ public class ForwardLinked<T> implements Iterable<T> {
 
 
     /**
-     * Удаление последнего элемента
-     * Учитывается, что head может быть равен null или head - единственный элемент в списке
-     * Возвращает значение удаленного
+     * Удаление последнего элемента Учитывается, что head может быть равен null
+     * или head - единственный элемент в списке Возвращает значение удаленного
      */
     public T deleteLast() {
 	if (isEmpty()) {
@@ -60,7 +60,8 @@ public class ForwardLinked<T> implements Iterable<T> {
     }
 
     /**
-     * Проверка пуста ли коллекция -  по сути проверка на head==null, ведь по head и можно сделать вывод, пуста коллекция или нет
+     * Проверка пуста ли коллекция -  по сути проверка на head==null, ведь по
+     * head и можно сделать вывод, пуста коллекция или нет
      *
      * @return ~
      */
@@ -86,10 +87,11 @@ public class ForwardLinked<T> implements Iterable<T> {
 
 
     /**
-     * Переворот списка.
-     * firstNode - указатель на первый, элемент, secondNode - на второй элемент.
-     * OldThreadOfNodes - чтобы не потерять прошлую цепочку, берется как secondNode.next и далее.
-     * Идея следующая: Рассматривается пара Node, ссылка из второй переопределяется на первую(secondNode.next = firstNode) и всё сдвигается
+     * Переворот списка. firstNode - указатель на первый, элемент, secondNode -
+     * на второй элемент. OldThreadOfNodes - чтобы не потерять прошлую цепочку,
+     * берется как secondNode.next и далее. Идея следующая: Рассматривается пара
+     * Node, ссылка из второй переопределяется на первую(secondNode.next =
+     * firstNode) и всё сдвигается
      */
     public void revert() {
 	if (!isEmpty()) {

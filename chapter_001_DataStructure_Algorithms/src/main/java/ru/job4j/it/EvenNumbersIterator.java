@@ -1,6 +1,5 @@
 package ru.job4j.it;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -21,15 +20,17 @@ public class EvenNumbersIterator implements Iterator<Integer> {
 
     /**
      * Основной конструктор
-     * @param data - итерируемый массив
+     *
+     * @param data
+     * 	- итерируемый массив
      */
-	public EvenNumbersIterator(int[] data) {
-	    this.data = data;
-	}
+    public EvenNumbersIterator(int[] data) {
+	this.data = data;
+    }
+
     /**
-     * Проверка есть ли четный элемент дальше, если есть ?
-     * меняет pointer и возвращает true
-     * : false
+     * Проверка есть ли четный элемент дальше, если есть ? меняет pointer и
+     * возвращает true : false
      *
      * @return
      */
@@ -47,8 +48,8 @@ public class EvenNumbersIterator implements Iterator<Integer> {
     }
 
     /**
-     * После проверки на hasNext - возвращает либо элемент с увеличением pointer'a,
-     * либо выбрасывает exception
+     * После проверки на hasNext - возвращает либо элемент с увеличением
+     * pointer'a, либо выбрасывает exception
      *
      * @return ~
      */
@@ -64,6 +65,7 @@ public class EvenNumbersIterator implements Iterator<Integer> {
      * Проверка, четное ли число, или нет
      *
      * @param number
+     *
      * @return ~
      */
     public boolean isEven(int number) {

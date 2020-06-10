@@ -8,15 +8,20 @@ import java.util.Map;
  */
 public class FreezeStr {
     /**
-     * Записываем в hashmap по ключу символа количество повторений в одной строке
-     * Во втором цикле в зависимости от совпадения снижаем количество повторений и по достижению ноля - ремуваем
-     * Если размер хэшмэпа == 0 => строки равны
+     * Записываем в hashmap по ключу символа количество повторений в одной
+     * строке Во втором цикле в зависимости от совпадения снижаем количество
+     * повторений и по достижению ноля - ремуваем Если размер хэшмэпа == 0 =>
+     * строки равны
      */
     public static boolean eq(String left, String right) {
-	Map<Character, Integer> mapOfCountOfCharactersInLeftString = new HashMap<>();
+	Map<Character, Integer> mapOfCountOfCharactersInLeftString =
+		new HashMap<>();
 	for (Character character : left.toCharArray()) {
 	    if (mapOfCountOfCharactersInLeftString.containsKey(character)) {
-		mapOfCountOfCharactersInLeftString.put(character, mapOfCountOfCharactersInLeftString.get(character) + 1);
+		mapOfCountOfCharactersInLeftString.put(character,
+						       mapOfCountOfCharactersInLeftString
+							       .get(character)
+							       + 1);
 	    } else {
 		mapOfCountOfCharactersInLeftString.put(character, 1);
 	    }
@@ -24,7 +29,8 @@ public class FreezeStr {
 	for (Character character : right.toCharArray()) {
 	    if (mapOfCountOfCharactersInLeftString.containsKey(character)) {
 		int size;
-		mapOfCountOfCharactersInLeftString.put(character, size = mapOfCountOfCharactersInLeftString.get(character) - 1);
+		mapOfCountOfCharactersInLeftString.put(character, size =
+			mapOfCountOfCharactersInLeftString.get(character) - 1);
 		if (size == 0) {
 		    mapOfCountOfCharactersInLeftString.remove(character);
 		}
