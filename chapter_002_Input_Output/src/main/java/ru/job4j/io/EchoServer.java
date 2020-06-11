@@ -1,5 +1,8 @@
 package ru.job4j.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,15 +15,16 @@ import java.util.function.Supplier;
 
 public class EchoServer {
     private static final String OK_REQUEST = "HTTP/1.1 200 OK\r\n\r\n";
+    private static final Logger LOG = LoggerFactory.getLogger(
+            EchoServer.class.getName());
 
     /**
-     * Вопрос - ответ на запросы пользовалея, возможные служебные варинты
-     * реализованы через dispatcher messageFromRequest - та часть запроса,
-     * которая идёт после http://localhost:9000/?msg="Вот эта часть" Так как
-     * использовать регулярки - плохо, то здесь всё также делается примитивно
-     * через работу со стрингом Важно! На забывать отправить OK_Request клиенту,
-     * потому что иначе страница будет висеть.
-     * message - сообщение от пользователя
+     Вопрос - ответ на запросы пользовалея, возможные служебные варинты
+     реализованы через dispatcher messageFromRequest - та часть запроса, которая
+     идёт после http://localhost:9000/?msg="Вот эта часть" Так как использовать
+     регулярки - плохо, то здесь всё также делается примитивно через работу со
+     стрингом Важно! На забывать отправить OK_Request клиенту, потому что иначе
+     страница будет висеть. message - сообщение от пользователя
      */
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(9000)) {
@@ -42,19 +46,22 @@ public class EchoServer {
                         out.write(dispatcher.systemWords.getOrDefault(
                                 message.toLowerCase(),
                                 dispatcher.defaultSupplier(message))
-                                .get()
-                                .getBytes());
+                                          .get()
+                                          .getBytes());
                     }
                 }
             }
+        } catch (Exception e) {
+            LOG.error("init server", e);
         }
     }
 
     /**
-     * Попытка поймать msg, которым мы получем
-     *
-     * @param request
-     * @return
+     Попытка поймать msg, которым мы получем
+
+     @param request
+
+     @return
      */
     private static String getMessage(String request) {
         String preMessageTemplate = "/?msg=";
@@ -66,7 +73,7 @@ public class EchoServer {
     }
 
     /**
-     * Диспачтер, смотри SpeakWithMe
+     Диспачтер, смотри SpeakWithMe
      */
     private static class Dispatcher {
         private static final String MESSAGE_HELLO = "hello";
@@ -76,11 +83,11 @@ public class EchoServer {
         Map<String, Supplier<String>> systemWords = new HashMap<>();
 
         /**
-         * Чтобы не выносить в глобал переменные, которые выносить вовсе не
-         * нужно, проще их тут закинуть В данном случае мы работамем с сервером,
-         * поэтому нам нужна ссылка на него
-         *
-         * @param serverSocket
+         Чтобы не выносить в глобал переменные, которые выносить вовсе не нужно,
+         проще их тут закинуть В данном случае мы работамем с сервером, поэтому
+         нам нужна ссылка на него
+
+         @param serverSocket
          */
         Dispatcher(ServerSocket serverSocket) {
             this.server = serverSocket;
@@ -88,7 +95,7 @@ public class EchoServer {
         }
 
         /**
-         * заполенение мапы нашими связками
+         заполенение мапы нашими связками
          */
         public void initDispatcher() {
             systemWords.put(MESSAGE_HELLO, msgHelloSupplier());
@@ -105,8 +112,7 @@ public class EchoServer {
                 try {
                     server.close();
                 } catch (IOException io) {
-                    System.out.println(
-                            "close Server by dispatcher exitSupplier");
+                    LOG.error("close Server by dispatcher exitSupplier", io);
                 }
                 return "";
             });
