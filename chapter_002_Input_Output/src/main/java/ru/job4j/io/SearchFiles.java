@@ -19,14 +19,14 @@ public class SearchFiles implements FileVisitor<Path> {
     /**
      * Список тех, кто прошёл проверку
      */
-    private List<Path> listOfPathsWhichPassedRule = new ArrayList<>();
+    private List<Path> paths = new ArrayList<>();
 
     public SearchFiles(Predicate<Path> rule) {
 	this.rule = rule;
     }
 
-    public List<Path> getListOfPathsWhichPassedRule() {
-	return listOfPathsWhichPassedRule;
+    public List<Path> getPaths() {
+	return paths;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SearchFiles implements FileVisitor<Path> {
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
 	    throws IOException {
 	if (rule.test(file)) {
-	    listOfPathsWhichPassedRule.add(file);
+	    paths.add(file);
 	}
 	return CONTINUE;
     }

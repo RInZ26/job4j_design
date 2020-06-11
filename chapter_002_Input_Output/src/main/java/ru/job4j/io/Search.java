@@ -39,7 +39,7 @@ public class Search {
 	    System.out.println("gg");
 	    e.printStackTrace();
 	}
-	return searcher.getListOfPathsWhichPassedRule();
+	return searcher.getPaths();
     }
 
     /**
@@ -58,6 +58,6 @@ public class Search {
 	    System.out.println("gg");
 	    e.printStackTrace();
 	}
-	return searcher.getListOfPathsWhichPassedRule();
+	return searcher.getPaths();
     }
 }
