@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -39,10 +40,12 @@ public class Searcher {
     }
 
     public static void main(String[] args) {
-        isValidKeys(args);
-        Searcher searcher = new Searcher(Paths.get(args[1]), new Dispatcher(
-                args).predicateFactory.get(args[4]).get());
-        exportData(Paths.get(args[6]), searcher.search());
+        if (isValidCommand(args)) {
+            Searcher searcher = new Searcher(Paths.get(args[1]), new Dispatcher(
+                    args).predicateFactory.get(args[4]).get());
+            exportData(Paths.get(args[6]), searcher.search());
+            System.out.println("Successful");
+        }
     }
 
     /**
@@ -53,7 +56,7 @@ public class Searcher {
      @param list
      Что грузим
      */
-    private static boolean exportData(Path target, List list) {
+    public static boolean exportData(Path target, List list) {
         try (PrintWriter writer = new PrintWriter(
                 new FileWriter(target.toFile()), true)) {
             list.forEach(writer::println);
@@ -73,13 +76,23 @@ public class Searcher {
     }
 
     /**
-     Валидация параметров из main.
+     Общая валидация. Сначале isValidKeys,т.к. там общие проверки, потом уже
+     isValidValues
+     */
+    public static boolean isValidCommand(String[] args) {
+        return isValidKeys(args) && isValidValues(args);
+    }
+
+    /**
+     Валидация ключей из args.
 
      keys - Возможный список ключей для опции -n Не
      вижу смысла здесь делать HashMap или какой-то массив
      Хотя можно было сделать и регулярку, но их и так уже много
+     (У нас массив, думаю, нет смысла заниматься склеиванием миллиона
+     подстрок ради этого)
      */
-    public static boolean isValidKeys(String[] args) {
+    private static boolean isValidKeys(String[] args) {
         String keys = "-m-f-r";
         if (args.length != 7 || !args[0].equals("-d") || !args[2].equals("-n")
                 || !keys.contains(args[4]) || !args[5].equals("-o")) {
@@ -89,9 +102,58 @@ public class Searcher {
     }
 
     /**
+     Валидация значений из args.
+     Имеет смысл делать это отдельно, потому что первоначально нам важно
+     проверить ключи, а потом уже это.
+     Так, нужно проверить существование папки root -d C:/directory
+     и существование parentDirectory(directory2) у target -o directory2/log.txt
+     Но, может быть сл
+     Подразумевается, что сначала вызовется isValidKeys, который сделает
+     общие проверки - на размер args, поэтому здесь это не проверяется
+     повторно и методы private.
+     Возможный синтаксис команды: -d c:/directory1 -n *.txt -m -o directory2/log
+     .txt
+
+     Проверка на маску/регулярку не предусмотрена
+     */
+    private static boolean isValidValues(String[] args) {
+        try {
+            Path source = Paths.get(args[1]);
+            Path target = Paths.get(args[6]);
+            if (source.toFile().exists() && isValidTarget(target)) {
+                return true;
+            } else {
+                throw new IllegalArgumentException(
+                        "Used directories are illegal");
+            }
+        } catch (InvalidPathException ipe) {
+            throw new IllegalArgumentException(getHint());
+        }
+    }
+
+    /**
+     Проверка капризного target. Проблема в том, что он может легально не
+     существовать
+     (ведь его создаёт в loadData writer сам спокойно), но в то же время,
+     может уже нелегально не существовать его родитель, то есть папка перед
+     файлом
+     */
+    private static boolean isValidTarget(Path target) {
+        if (target.toFile().exists()) {
+            return true;
+        }
+        Path parent = target.getParent();
+        if (parent == null) {
+            return true;
+        } else {
+            return parent.toFile().exists();
+        }
+    }
+
+    /**
      Сообщение с подсказкой, когда корявый вызов
      */
-    private static String getHint() {
+    public static String getHint() {
         return ("Ключи \n" + "-d - директория в которая начинать поиск.\n"
                 + "-n - имя файл, маска, либо регулярное выражение.\n"
                 + "-m - искать по макс, либо -f - полное совпадение имени. "
