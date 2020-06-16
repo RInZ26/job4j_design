@@ -57,11 +57,10 @@ public class SpeakWithMe {
                 System.out.println("Write something: ");
                 userQuestion = userReader.readLine();
                 System.out.println(
-                        systemAnswer = dispatcher.systemReactions
-                                .getOrDefault(userQuestion.toLowerCase(),
-											  dispatcher.defaultSystemAnswer(
-                                                      listOfSystemAnswers))
-                                .get());
+                        systemAnswer = dispatcher.systemReactions.getOrDefault(
+                                userQuestion.toLowerCase(),
+                                dispatcher.defaultSystemAnswer(
+                                        listOfSystemAnswers)).get());
                 logOfConversation.add(
                         String.format("%s  -  %s", userQuestion, systemAnswer));
             }
@@ -124,10 +123,8 @@ public class SpeakWithMe {
 
         // Init all system words and it functions
         void init() {
-            systemReactions.put(FINISH_WORD,
-								finishWordSupplier());
-            systemReactions.put(CONTINUE_WORD,
-								continueWordSupplier());
+            systemReactions.put(FINISH_WORD, finishWordSupplier());
+            systemReactions.put(CONTINUE_WORD, continueWordSupplier());
             systemReactions.put(STOP_WORD, stopWordSupplier());
         }
 

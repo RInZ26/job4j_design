@@ -17,51 +17,51 @@ public class AnalizeTest {
 
     @Before
     public void setUp() {
-	nastya = new User(13, "nastya");
-	dima = new User(4, "dima");
-	matvey = new User(2, "matvey");
-	masha = new User(-9, "masha");
-	natasha = new User(0, "natasha");
-	ane4ka = new User(12, "anya");
+        nastya = new User(13, "nastya");
+        dima = new User(4, "dima");
+        matvey = new User(2, "matvey");
+        masha = new User(-9, "masha");
+        natasha = new User(0, "natasha");
+        ane4ka = new User(12, "anya");
     }
 
     @Test
     public void testAdded2Changed2Delete2() {
-	List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
-	User newNastya = new User(nastya.id, "fu");
-	User newDima = new User(dima.id, "balda");
-	List<User> currentList =
-		Arrays.asList(matvey, natasha, newNastya, newDima);
-	Info actual = Analize.diff(previousList, currentList);
-	assertThat(actual.added, is(2));
-	assertThat(actual.changed, is(2));
-	assertThat(actual.deleted, is(2));
+        List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
+        User newNastya = new User(nastya.id, "fu");
+        User newDima = new User(dima.id, "balda");
+        List<User> currentList = Arrays.asList(matvey, natasha, newNastya,
+                                               newDima);
+        Info actual = Analize.diff(previousList, currentList);
+        assertThat(actual.added, is(2));
+        assertThat(actual.changed, is(2));
+        assertThat(actual.deleted, is(2));
     }
 
     @Test
     public void testAddedSameLists() {
-	List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
-	Info actual = Analize.diff(previousList, previousList);
-	assertThat(actual.added, is(0));
-	assertThat(actual.changed, is(0));
-	assertThat(actual.deleted, is(0));
+        List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
+        Info actual = Analize.diff(previousList, previousList);
+        assertThat(actual.added, is(0));
+        assertThat(actual.changed, is(0));
+        assertThat(actual.deleted, is(0));
     }
 
     @Test
     public void testWhenCurrentIsEmpty() {
-	List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
-	Info actual = Analize.diff(previousList, Collections.emptyList());
-	assertThat(actual.added, is(0));
-	assertThat(actual.changed, is(0));
-	assertThat(actual.deleted, is(4));
+        List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
+        Info actual = Analize.diff(previousList, Collections.emptyList());
+        assertThat(actual.added, is(0));
+        assertThat(actual.changed, is(0));
+        assertThat(actual.deleted, is(4));
     }
 
     @Test
     public void testWhenPreviousIsEmpty() {
-	List<User> currentList = Arrays.asList(nastya, dima, masha, ane4ka);
-	Info actual = Analize.diff(Collections.emptyList(), currentList);
-	assertThat(actual.added, is(4));
-	assertThat(actual.changed, is(0));
-	assertThat(actual.deleted, is(0));
+        List<User> currentList = Arrays.asList(nastya, dima, masha, ane4ka);
+        Info actual = Analize.diff(Collections.emptyList(), currentList);
+        assertThat(actual.added, is(4));
+        assertThat(actual.changed, is(0));
+        assertThat(actual.deleted, is(0));
     }
 }

@@ -13,50 +13,51 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class SearchFiles implements FileVisitor<Path> {
     /**
-     * Предикат который проверяет пути, например на расширения
+     Предикат который проверяет пути, например на расширения
      */
     private Predicate<Path> rule;
     /**
-     * Список тех, кто прошёл проверку
+     Список тех, кто прошёл проверку
      */
     private List<Path> paths = new ArrayList<>();
 
     public SearchFiles(Predicate<Path> rule) {
-	this.rule = rule;
+        this.rule = rule;
     }
 
     public List<Path> getPaths() {
-	return paths;
+        return paths;
     }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir,
-	    BasicFileAttributes attrs) throws IOException {
-	return CONTINUE;
+                                             BasicFileAttributes attrs)
+            throws IOException {
+        return CONTINUE;
     }
 
     /**
-     * Что происходит при посещении файла
+     Что происходит при посещении файла
      */
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-	    throws IOException {
-	if (rule.test(file)) {
-	    paths.add(file);
-	}
-	return CONTINUE;
+            throws IOException {
+        if (rule.test(file)) {
+            paths.add(file);
+        }
+        return CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc)
-	    throws IOException {
-	System.out.println("Problem file " + file);
-	return CONTINUE;
+            throws IOException {
+        System.out.println("Problem file " + file);
+        return CONTINUE;
     }
 
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-	    throws IOException {
-	return CONTINUE;
+            throws IOException {
+        return CONTINUE;
     }
 }

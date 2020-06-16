@@ -46,8 +46,8 @@ public class EchoServer {
                         out.write(dispatcher.systemWords.getOrDefault(
                                 message.toLowerCase(),
                                 dispatcher.defaultSupplier(message))
-                                          .get()
-                                          .getBytes());
+                                                        .get()
+                                                        .getBytes());
                     }
                 }
             }

@@ -1,7 +1,7 @@
 package ru.job4j.generic;
 
 /**
- * Для использования MemStore Класс - пустышка
+ Для использования MemStore Класс - пустышка
  */
 public class RoleStore implements Store<Role> {
 
@@ -9,21 +9,21 @@ public class RoleStore implements Store<Role> {
 
     @Override
     public void add(Role model) {
-	store.add(model);
+        store.add(model);
     }
 
     @Override
     public boolean replace(String id, Role model) {
-	return store.replace(id, model);
+        return store.replace(id, model);
     }
 
     @Override
     public boolean delete(String id) {
-	return store.delete(id);
+        return store.delete(id);
     }
 
     @Override
     public Role findById(String id) {
-	return store.findById(id);
+        return store.findById(id);
     }
 }

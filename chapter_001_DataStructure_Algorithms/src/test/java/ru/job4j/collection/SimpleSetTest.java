@@ -16,25 +16,25 @@ public class SimpleSetTest {
 
     @Before
     public void setUp() {
-	stringSimpleSet = new SimpleSet<>();
+        stringSimpleSet = new SimpleSet<>();
     }
 
     @Test
     public void addAndIter() {
-	stringSimpleSet.add(suno);
-	Iterator<String> tempIterator = stringSimpleSet.iterator();
-	assertThat(tempIterator.next(), is(suno));
-	assertFalse(tempIterator.hasNext());
+        stringSimpleSet.add(suno);
+        Iterator<String> tempIterator = stringSimpleSet.iterator();
+        assertThat(tempIterator.next(), is(suno));
+        assertFalse(tempIterator.hasNext());
     }
 
     @Test
     public void addCopies() {
-	stringSimpleSet.add(suno);
-	stringSimpleSet.add(rin);
-	stringSimpleSet.add(suno);
-	Iterator<String> tempIterator = stringSimpleSet.iterator();
-	assertThat(tempIterator.next(), is(suno));
-	assertThat(tempIterator.next(), is(rin));
-	assertFalse(tempIterator.hasNext());
+        stringSimpleSet.add(suno);
+        stringSimpleSet.add(rin);
+        stringSimpleSet.add(suno);
+        Iterator<String> tempIterator = stringSimpleSet.iterator();
+        assertThat(tempIterator.next(), is(suno));
+        assertThat(tempIterator.next(), is(rin));
+        assertFalse(tempIterator.hasNext());
     }
 }

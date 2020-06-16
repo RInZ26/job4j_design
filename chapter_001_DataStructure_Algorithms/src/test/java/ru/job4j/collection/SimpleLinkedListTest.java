@@ -16,46 +16,46 @@ public class SimpleLinkedListTest {
 
     @Before
     public void setUp() {
-	stringSimpleLinkedList = new SimpleLinkedList<>();
-	suno = "Sunokasuri";
-	rin = "Prince";
+        stringSimpleLinkedList = new SimpleLinkedList<>();
+        suno = "Sunokasuri";
+        rin = "Prince";
     }
 
     @Test
     public void add() {
-	stringSimpleLinkedList.add(suno);
-	assertThat(stringSimpleLinkedList.get(0), is(suno));
+        stringSimpleLinkedList.add(suno);
+        assertThat(stringSimpleLinkedList.get(0), is(suno));
     }
 
     @Test
     public void get() {
-	stringSimpleLinkedList.add(suno);
-	stringSimpleLinkedList.add(rin);
-	assertThat(stringSimpleLinkedList.get(0), is(suno));
-	assertThat(stringSimpleLinkedList.get(1), is(rin));
+        stringSimpleLinkedList.add(suno);
+        stringSimpleLinkedList.add(rin);
+        assertThat(stringSimpleLinkedList.get(0), is(suno));
+        assertThat(stringSimpleLinkedList.get(1), is(rin));
     }
 
     @Test(expected = ConcurrentModificationException.class)
     public void iteratorConcurrentModifException() {
-	stringIterator = stringSimpleLinkedList.iterator();
-	stringSimpleLinkedList.add(suno);
-	stringIterator.hasNext();
+        stringIterator = stringSimpleLinkedList.iterator();
+        stringSimpleLinkedList.add(suno);
+        stringIterator.hasNext();
     }
 
     @Test
     public void iteratorNormalRunWithoutExceptions() {
-	stringSimpleLinkedList.add(suno);
-	stringSimpleLinkedList.add(rin);
-	stringIterator = stringSimpleLinkedList.iterator();
-	assertTrue(stringIterator.hasNext());
-	assertThat(stringIterator.next(), is(suno));
-	assertThat(stringIterator.next(), is(rin));
-	assertFalse(stringIterator.hasNext());
+        stringSimpleLinkedList.add(suno);
+        stringSimpleLinkedList.add(rin);
+        stringIterator = stringSimpleLinkedList.iterator();
+        assertTrue(stringIterator.hasNext());
+        assertThat(stringIterator.next(), is(suno));
+        assertThat(stringIterator.next(), is(rin));
+        assertFalse(stringIterator.hasNext());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void getWithWrongIndex() {
-	stringSimpleLinkedList.add(suno);
-	stringSimpleLinkedList.get(1);
+        stringSimpleLinkedList.add(suno);
+        stringSimpleLinkedList.get(1);
     }
 }

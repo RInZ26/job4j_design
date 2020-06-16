@@ -45,7 +45,9 @@ public class ArgZip {
         if (argZip.initIfValid()) {
             System.out.println("All are going nice");
             new Zip().packFiles(Search.seekByPredicate(argZip.directory,
-                    getPredicate(argZip.exclude)), argZip.output);
+                                                       getPredicate(
+                                                               argZip.exclude)),
+                                argZip.output);
         }
     }
 

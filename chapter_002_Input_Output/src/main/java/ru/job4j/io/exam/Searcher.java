@@ -64,19 +64,6 @@ public class Searcher {
     }
 
     /**
-     Поиск файлов по предикату
-     */
-    public List<Path> search() {
-        SearcherFileVisitor fileVisitor = new SearcherFileVisitor(rule);
-        try {
-            Files.walkFileTree(root, fileVisitor);
-        } catch (Exception e) {
-            LOG.error("search", e);
-        }
-        return fileVisitor.getPaths();
-    }
-
-    /**
      Преобразует маску в паттерн, чтобы объединить варианты поиска по маске и по
      регулярке
      */
@@ -92,7 +79,7 @@ public class Searcher {
      вижу смысла здесь делать HashMap или какой-то массив
      Хотя можно было сделать и регулярку, но их и так уже много
      */
-    public static boolean isValidKeys(String... args) {
+    public static boolean isValidKeys(String[] args) {
         String keys = "-m-f-r";
         if (args.length != 7 || !args[0].equals("-d") || !args[2].equals("-n")
                 || !keys.contains(args[4]) || !args[5].equals("-o")) {
@@ -111,6 +98,19 @@ public class Searcher {
                 + "-r регулярное выражение.\n"
                 + "-o - результат записать в файл\n"
                 + " Example: -d c:/ -n *.txt " + "-m " + "-o log.txt ");
+    }
+
+    /**
+     Поиск файлов по предикату
+     */
+    public List<Path> search() {
+        SearcherFileVisitor fileVisitor = new SearcherFileVisitor(rule);
+        try {
+            Files.walkFileTree(root, fileVisitor);
+        } catch (Exception e) {
+            LOG.error("search", e);
+        }
+        return fileVisitor.getPaths();
     }
 
     /**
