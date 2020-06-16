@@ -17,11 +17,10 @@ public class UsageLog4j {
         float paramFloat = 6;
         double paramDouble = 7;
         boolean paramBoolean = false;
-        LOG.debug("paramByte : {}, paramShort : {}, paramChar : {},", paramByte,
-                  paramShort, paramChar);
-        LOG.debug("paramInt : {}, paramLong : {}, paramFloat : {},", paramInt,
-                  paramLong, paramFloat);
-        LOG.debug("paramDouble : {}, paramBoolean : {} ", paramDouble,
-                  paramBoolean);
+        LOG.debug("paramByte : {}, paramShort : {}, paramChar : {}, paramInt "
+                          + ": {}, " + "paramLong : {}, paramFloat : {}, "
+                          + "paramDouble : {}, paramBoolean : {} ", paramByte,
+                  paramShort, paramChar, paramInt, paramLong, paramFloat,
+                  paramDouble, paramBoolean);
     }
 }
