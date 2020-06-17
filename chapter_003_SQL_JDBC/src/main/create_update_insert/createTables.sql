@@ -39,7 +39,7 @@ CREATE TABLE users(
 CREATE TABLE items(
 	id SERIAL PRIMARY KEY,
 	user_id INT REFERENCES users(id),
-	item_type_id INT REFERENCES item_categories(id),
+	item_category_id INT REFERENCES item_categories(id),
 	item_state_id INT REFERENCES item_states(id)
 );
 -- Приложенные Файлы.

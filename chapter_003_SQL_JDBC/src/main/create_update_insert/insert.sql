@@ -42,7 +42,7 @@ VALUES('Иван', 'Скворчук', 1),
 ('Настя', 'Чугунова', 2);
 
 --Заявки.
-INSERT INTO items(item_state_id, item_type_id, user_id)
+INSERT INTO items(item_state_id, item_category_id, user_id)
 VALUES(1, 1, 1),
 (2, 1, 2),
 (3, 3, 3);
