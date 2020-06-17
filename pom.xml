@@ -12,6 +12,7 @@
     <modules>
         <module>chapter_001_DataStructure_Algorithms</module>
         <module>chapter_002_Input_Output</module>
+        <module>chapter_003_SQL_JDBC</module>
     </modules>
 
 
