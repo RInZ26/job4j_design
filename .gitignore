@@ -78,3 +78,4 @@ build
 
 src/site
 /src/main/java/
+/chapter_003_SQL_JDBC/src/main/query/create_insert.sql
