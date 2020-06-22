@@ -25,9 +25,10 @@ INNER JOIN types AS t ON p.type_id = t.id
 WHERE t.name IN ('СЫР', 'МОЛОКО');
 
 -- 7. Написать запрос, который выводит тип продуктов, которых осталось меньше 10 штук.
-SELECT t.name, p.count FROM types AS t
-INNER JOIN (SELECT COUNT(*), p.type_id FROM products AS p GROUP BY p.type_id) AS p ON t.id = p.type_id
-WHERE p.count <= 10;
+SELECT t.name FROM types AS t
+INNER JOIN products AS p ON t.id = p.type_id
+GROUP BY t.name
+HAVING COUNT(p.type_id) < 10;
 
 -- 8. Вывести все продукты и их тип.
 SELECT p.id as products_id, p.name, p.expired_date, t.id as type_id, t.name FROM products AS p
