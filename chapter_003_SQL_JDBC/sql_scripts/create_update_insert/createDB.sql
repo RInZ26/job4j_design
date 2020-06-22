@@ -1,0 +1,1 @@
+CREATE DATABASE i_love_music;
