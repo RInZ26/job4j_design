@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ Класс для записи данных из файла в бд
+ */
 public class ImportDB {
 
     private static final String SAVE_QUERY =
@@ -26,6 +29,9 @@ public class ImportDB {
      */
     private String dump;
 
+    /**
+     Дефолтный конструткор
+     */
     public ImportDB(Properties cfg, String dump) {
         this.cfg = cfg;
         this.dump = dump;
@@ -43,7 +49,9 @@ public class ImportDB {
                         : new User(splitted[0], null);
             }).collect(Collectors.toList());
         }
+
         return users;
+
     }
 
     /**
