@@ -13,10 +13,6 @@ class Shell {
      Регулярка корректной добавляемой строки
      */
     private static final Pattern PATTERN = Pattern.compile("(\\w+/?)+");
-    /**
-     Композируем диспатчер
-     */
-    private Dispatcher dispatcher = new Dispatcher();
 
     /**
      Фейковый root для случаев, когда не можем подняться в dirUp
@@ -24,17 +20,26 @@ class Shell {
     private static String root = "";
 
     /**
+     Композируем диспатчер
+     */
+    private Dispatcher dispatcher = new Dispatcher();
+
+    /**
      Переменная для отслеживания текущего состояния пути
      */
-    Path path = Paths.get(root);
+    private Path path = Paths.get(root);
 
     /**
      Перемещение по каталогам
-     @param command - команда
+
+     @param command
+     - команда
+
      @return возвращает себя для chain вызова
      */
     Shell cd(final String command) {
-        dispatcher.options.getOrDefault(command, ifNotOption(command)).accept(command);
+        dispatcher.options.getOrDefault(command, ifNotOption(command))
+                          .accept(command);
         return this;
     }
 
@@ -47,6 +52,10 @@ class Shell {
                                                  .replaceAll("\\\\", "/");
     }
 
+    /**
+     Обёртка для дефольного консьюмера в качестве промежуточного метода с
+     различным выводом.
+     */
     private Consumer<String> ifNotOption(String newPath) {
         return PATTERN.matcher(newPath).matches() ? dispatcher.dirDown()
                 : ((String a) -> System.out.printf(
@@ -56,7 +65,7 @@ class Shell {
 
     private class Dispatcher {
         static final String COMMAND_DOWN = "..";
-        Map<String, Consumer<String>> options = new HashMap<>();
+        private Map<String, Consumer<String>> options = new HashMap<>();
 
         Dispatcher() {
             init();
@@ -77,7 +86,7 @@ class Shell {
         Consumer<String> dirUp() {
             return (String a) -> Shell.this.path = Optional.of(path.getParent())
                                                            .orElse(Paths.get(
-                                                                   Shell.this.root));
+                                                                   Shell.root));
         }
 
         /**
