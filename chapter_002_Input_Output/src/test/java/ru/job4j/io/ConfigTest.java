@@ -10,8 +10,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class ConfigTest {
-    String path;
-    Config config;
+    private String path;
+    private Config config;
 
     @Before
     public void setUp() {

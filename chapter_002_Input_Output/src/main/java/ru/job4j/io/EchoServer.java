@@ -66,8 +66,7 @@ public class EchoServer {
     private static String getMessage(String request) {
         String preMessageTemplate = "/?msg=";
         int indexOfMsgStart = request.indexOf("/?msg=");
-        return indexOfMsgStart != -1
-                ? request.substring(
+        return indexOfMsgStart != -1 ? request.substring(
                 indexOfMsgStart + preMessageTemplate.length()).split(" ")[0]
                 : "";
     }
@@ -79,8 +78,8 @@ public class EchoServer {
         private static final String MESSAGE_HELLO = "hello";
         private static final String MESSAGE_EXIT = "exit";
         private static final String MESSAGE_WHAT = "what";
-        ServerSocket server;
-        Map<String, Supplier<String>> systemWords = new HashMap<>();
+       private ServerSocket server;
+        private Map<String, Supplier<String>> systemWords = new HashMap<>();
 
         /**
          Чтобы не выносить в глобал переменные, которые выносить вовсе не нужно,

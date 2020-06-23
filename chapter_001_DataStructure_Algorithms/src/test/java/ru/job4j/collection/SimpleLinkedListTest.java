@@ -10,9 +10,10 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SimpleLinkedListTest {
-    SimpleLinkedList<String> stringSimpleLinkedList;
-    String suno, rin;
-    Iterator<String> stringIterator;
+    private SimpleLinkedList<String> stringSimpleLinkedList;
+    private String suno;
+    private String rin;
+    private Iterator<String> stringIterator;
 
     @Before
     public void setUp() {

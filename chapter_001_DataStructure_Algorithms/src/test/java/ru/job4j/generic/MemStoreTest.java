@@ -8,8 +8,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class MemStoreTest {
-    MemStore<User> userMemStore;
-    User nastya, suno;
+    private MemStore<User> userMemStore;
+    private User nastya;
+    private User suno;
 
     @Before
     public void setUp() throws Exception {

@@ -15,11 +15,11 @@ import static org.junit.Assert.assertThat;
 
 public class AnalizyTest {
     @Rule public TemporaryFolder folder = new TemporaryFolder();
-    String sourceFileName = "AnalyzeLog.txt";
-    String targetFileName = "unavailable.txt";
-    List<String> listOfTestingRecords;
-    File sourceFile;
-    File targetFile;
+    private String sourceFileName = "AnalyzeLog.txt";
+    private String targetFileName = "unavailable.txt";
+    private List<String> listOfTestingRecords;
+    private File sourceFile;
+    private File targetFile;
 
     @Before
     public void setUp() throws IOException {

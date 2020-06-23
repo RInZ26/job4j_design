@@ -120,8 +120,8 @@ public class Analizy {
     private static class Holder {
         private static final Holder EMPTY_HOLDER = new Holder("Infinity",
                                                               "Infinity");
-        String startOfTrackingPeriod;
-        String finishOfTrackingPeriod;
+        private String startOfTrackingPeriod;
+        private String finishOfTrackingPeriod;
 
         private Holder(String startOfTrackingPeriod,
                        String finishOfTrackingPeriod) {

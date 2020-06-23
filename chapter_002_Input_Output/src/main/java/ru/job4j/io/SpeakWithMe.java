@@ -10,19 +10,18 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-
 /**
- Класс для одиноких людей
+ * Класс для одиноких людей
  */
 public class SpeakWithMe {
     /**
-     Логгер для класса
+     * Логгер для класса
      */
     private static final Logger LOG = LoggerFactory.getLogger(
             SpeakWithMe.class.getName());
     /**
-     Попробуем вынести желание пользователя сюда в глобал [update]Это глупо,
-     потому что можно просто их передавать в диспатчер
+     * Попробуем вынести желание пользователя сюда в глобал [update]Это глупо,
+     * потому что можно просто их передавать в диспатчер
      */
     private static boolean userDesireOfSpeaking = true;
     private static boolean isTheEnd;
@@ -34,14 +33,19 @@ public class SpeakWithMe {
     }
 
     /**
-     Запись в коллекцию из файл при частом обращении - оправдано! Потому что
-     операция чтения дорогая. Держать стрим на запись долго - не надо, поэтому
-     лог формируется в конце в отдельном минитрае Используется паттерн dispatcher
-     в том или ином виде. Логика - избегать ифы и изменять код при расширении не
-     здесь, а в диспатчере По поводу работы самого автоответчика: Есть два глобал
-     булиана: isTheEnd - завершение работы, userDesireOfSpeaking - желание юзера
-     получать ответы от системы Поддерживается три системные команды - они
-     описаны в диспатчере.
+     * Запись в коллекцию из файл при частом обращении - оправдано! Потому что
+     * операция чтения дорогая. Держать стрим на запись долго - не надо,
+     * поэтому
+     * лог формируется в конце в отдельном минитрае Используется паттерн
+     * dispatcher
+     * в том или ином виде. Логика - избегать ифы и изменять код при расширении
+     * не
+     * здесь, а в диспатчере По поводу работы самого автоответчика: Есть два
+     * глобал
+     * булиана: isTheEnd - завершение работы, userDesireOfSpeaking - желание
+     * юзера
+     * получать ответы от системы Поддерживается три системные команды - они
+     * описаны в диспатчере.
      */
     public static void wannaSpeak(Path pathSourceOfAnswers,
                                   Path pathLogOfConversation) {
@@ -76,11 +80,11 @@ public class SpeakWithMe {
     }
 
     /**
-     Проверка, что файл ответов существует. Boolean тут ни к чему по сути, но
-     хочется поставить
-
-     @param path
-     путь до файла
+     * Проверка, что файл ответов существует. Boolean тут ни к чему по сути, но
+     * хочется поставить
+     *
+     * @param path
+     *         путь до файла
      */
     private static boolean isExistAndFile(Path path) {
         if (!path.toFile().exists() && !path.toFile().isFile()) {
@@ -91,8 +95,9 @@ public class SpeakWithMe {
     }
 
     /**
-     Заполнение коллекции ответов из файла с внутренней проверкой на возможность
-     оного Почему она вообще нужна - читай speakWithMe
+     * Заполнение коллекции ответов из файла с внутренней проверкой на
+     * возможность
+     * оного Почему она вообще нужна - читай speakWithMe
      */
     private static List<String> loadFile(Path pathAnswerFile) {
         isExistAndFile(pathAnswerFile);
@@ -106,16 +111,17 @@ public class SpeakWithMe {
     }
 
     /**
-     Используем хитрый диспатч вместо свичей https://github.com/peterarsentev/code_quality_principles
-     У нас есть мапа по ключевым словам, за которыми закреплены определенные
-     действия, выглядит неплохо, хотя и пришлось вынести булианы в global
+     * Используем хитрый диспатч вместо свичей
+     * https://github.com/peterarsentev/code_quality_principles
+     * У нас есть мапа по ключевым словам, за которыми закреплены определенные
+     * действия, выглядит неплохо, хотя и пришлось вынести булианы в global
      */
     private static class Dispatcher {
         private static final String FINISH_WORD = "закончить";
         private static final String STOP_WORD = "стоп";
         private static final String CONTINUE_WORD = "продолжить";
         private static final String SYSTEM_SILENCED = "";
-        Map<String, Supplier<String>> systemReactions = new HashMap<>();
+        private Map<String, Supplier<String>> systemReactions = new HashMap<>();
 
         Dispatcher() {
             init();
@@ -129,8 +135,8 @@ public class SpeakWithMe {
         }
 
         /**
-         Этот метод и далее просто заносят логику действий, которые должны
-         выполняться при вводе команды пользователем
+         * Этот метод и далее просто заносят логику действий, которые должны
+         * выполняться при вводе команды пользователем
          */
         private Supplier<String> finishWordSupplier() {
             return () -> {
@@ -155,19 +161,17 @@ public class SpeakWithMe {
         }
 
         /**
-         Эта штука выполняется, когда ничего не нашлось в мапе посредством
-         getOrDefault
-
-         @param listOfSystemAnswers
-         ссылка на коллекцию, с которой работаем
+         * Эта штука выполняется, когда ничего не нашлось в мапе посредством
+         * getOrDefault
+         *
+         * @param listOfSystemAnswers
+         *         ссылка на коллекцию, с которой работаем
          */
         private Supplier<String> defaultSystemAnswer(
                 List<String> listOfSystemAnswers) {
             Random rnd = new Random();
-            return () -> userDesireOfSpeaking
-                    ? listOfSystemAnswers.get(
-                    rnd.nextInt(listOfSystemAnswers.size()))
-                    : SYSTEM_SILENCED;
+            return () -> userDesireOfSpeaking ? listOfSystemAnswers.get(
+                    rnd.nextInt(listOfSystemAnswers.size())) : SYSTEM_SILENCED;
         }
 
     }

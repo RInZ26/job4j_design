@@ -15,13 +15,13 @@ public class SimpleLinkedList<T> implements Iterable<T> {
     /**
      Указатель на первый элемент цепочки
      */
-    Node<T> start;
+    private Node<T> start;
     /**
      Указатель на последний элемент цепочки
      */
-    Node<T> finish;
+    private Node<T> finish;
     /**
-     * Отражает "версию" коллекции. Если было внесено какое-то изменение,
+     Отражает "версию" коллекции. Если было внесено какое-то изменение,
      счетчик увеличивается. Используется для корректной работы итераторов
      */
     private int versionOfCollection;
@@ -100,7 +100,9 @@ public class SimpleLinkedList<T> implements Iterable<T> {
             private int currentVersionOfCollection = SimpleLinkedList.this.versionOfCollection;
             /**
              * Поинтер на ТЕКУЩИЙ Node, но с учетом того, что мы всегда проверяем currentNode.next
-             *  Т.к. у нас первый и последний элемент в списке является заглушкой, то здесь в качестве первого элемента выступает start.next, а в качестве проверки на окочание - finish
+             *  Т.к. у нас первый и последний элемент в списке является заглушкой,
+             *  то здесь в качестве первого элемента выступает start.next, а
+             *  в качестве проверки на окочание - finish
              */
             private Node<T> currentNode = new Node<T>(null,
                                                       SimpleLinkedList.this.start.next,
@@ -136,15 +138,15 @@ public class SimpleLinkedList<T> implements Iterable<T> {
         /**
          Ссылка на прошлый элемент
          */
-        Node<T> previous;
+        private Node<T> previous;
         /**
          Ссылка на следующий
          */
-        Node<T> next;
+        private Node<T> next;
         /**
          Элемент
          */
-        T element;
+        private T element;
 
         /**
          Основной конструктор

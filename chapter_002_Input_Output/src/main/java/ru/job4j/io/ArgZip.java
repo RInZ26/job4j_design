@@ -60,10 +60,9 @@ public class ArgZip {
     public boolean initIfValid() {
         if (args.length != 3) {
             throw new IllegalArgumentException(String.format(
-                    "%s ARGUMENTS. Need only 3. 1) SOURCE DIRECTORY 2)EXTENSION OF EXCLUDED FILES 3) TARGET .zip",
-                    args.length < 3
-                            ? "NOT ENOUGH"
-                            : "MORE THAN NEED"));
+                    "%s ARGUMENTS. Need only 3. 1) SOURCE DIRECTORY "
+                            + "2)EXTENSION OF EXCLUDED FILES 3) TARGET .zip",
+                    args.length < 3 ? "NOT ENOUGH" : "MORE THAN NEED"));
         }
         boolean result = false;
         String[] splDir = args[0].split("=");
@@ -73,7 +72,9 @@ public class ArgZip {
                 || !splOut[0].equals("-o") || splDir.length != 2
                 || splExc.length != 2 || splOut.length != 2) {
             throw new IllegalArgumentException(
-                    "One of parameters is empty or using wrong key. U have to init  -d=\"sourseDirectory\" -e=\"excludeExtension\" -o=\"outputZipFile\"");
+                    "One of parameters is empty or using wrong key. U have to init  "
+                            + "-d=\"sourseDirectory\" "
+                            + "-e=\"excludeExtension\" -o=\"outputZipFile\"");
         }
         if (isDir(splDir[1]) && isOutput(splOut[1])) {
             directory = Paths.get(splDir[1]);

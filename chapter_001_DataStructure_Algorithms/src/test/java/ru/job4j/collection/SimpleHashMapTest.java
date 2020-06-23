@@ -7,8 +7,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SimpleHashMapTest {
-    SimpleHashMap<String, String> blessedMap;
-    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka", prince = "Prince", balda = "balda";
+    private SimpleHashMap<String, String> blessedMap;
+    private String nastya = "Nastya";
+    private String ivan = "Ivan";
+    private String matvey = "Matvey";
+    private String baka = "baka";
+    private String prince = "Prince";
+    private String balda = "balda";
 
     @Before
     public void setUp() throws Exception {
@@ -46,8 +51,8 @@ public class SimpleHashMapTest {
     }
 
     /**
-     Когда у нас создался внутренний linkedList и мы добавляем по тому же
-     ключу
+     * Когда у нас создался внутренний linkedList и мы добавляем по тому же
+     * ключу
      */
     @Test
     public void insertElementsWithSameKeyWhenInnerLinkedListIsExisting() {
@@ -60,7 +65,6 @@ public class SimpleHashMapTest {
         assertThat(blessedMap.get(matvey), is(baka));
         assertThat(blessedMap.get(ivan), is(prince));
     }
-
 
     @Test
     public void simpleDeleteWhenMapHas1ElementInInnerLinkedList() {
@@ -80,7 +84,6 @@ public class SimpleHashMapTest {
         assertThat(blessedMap.get(ivan), is(prince));
         assertThat(blessedMap.getSize(), is(1));
     }
-
 
     @Test
     public void iteratorHasNext() {
@@ -112,6 +115,4 @@ public class SimpleHashMapTest {
         mapIterator.next();
         assertFalse(mapIterator.hasNext());
     }
-
-
 }

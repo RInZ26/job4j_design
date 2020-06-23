@@ -18,7 +18,7 @@ public class SimpleArray<T> implements Iterable<T> {
      Отражает "версию" коллекции. Если было внесено какое-то изменение,
      счетчик увеличивается. Используется для корректной работы итераторов
      */
-    public int versionOfCollection;
+    private int versionOfCollection;
     /**
      Хранилище данных
      */
@@ -47,6 +47,10 @@ public class SimpleArray<T> implements Iterable<T> {
         data = new Object[size];
     }
 
+    public int getCountOfElements() {
+        return countOfElements;
+    }
+
     /**
      Возвращает элемет, если index в норме
 
@@ -57,8 +61,7 @@ public class SimpleArray<T> implements Iterable<T> {
      */
     public T get(int index) {
         return index == Objects.checkIndex(index, countOfElements)
-                ? (T) data[index]
-                : null;
+                ? (T) data[index] : null;
     }
 
     /**
@@ -105,7 +108,8 @@ public class SimpleArray<T> implements Iterable<T> {
             private Object[] data = SimpleArray.this.data;
 
             /**
-             * Указатель на следующий элемент, работает в паре с SimpleArray.countOfElements (его getter size())
+             * Указатель на следующий элемент, работает в паре с
+             * SimpleArray.countOfElements (его getter size())
              */
             private int pointer;
 

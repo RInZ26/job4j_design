@@ -10,9 +10,14 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SimpleHashMapNodeTest {
-    String nastya = "Nastya", ivan = "Ivan", matvey = "Matvey", baka = "baka", prince = "Prince", balda = "balda";
-    Node<String, String> cursedNode;
-    Iterator<Node<String, String>> cursedIterator;
+    private String nastya = "Nastya";
+    private String ivan = "Ivan";
+    private String matvey = "Matvey";
+    private String baka = "baka";
+    private String prince = "Prince";
+    private String balda = "balda";
+    private Node<String, String> cursedNode;
+    private Iterator<Node<String, String>> cursedIterator;
 
     @Before
     public void setUp() {
@@ -41,8 +46,8 @@ public class SimpleHashMapNodeTest {
     public void iteratorRemoveFirst() {
         cursedIterator.next();
         cursedIterator.remove();
-        assertThat(cursedNode.key, is(ivan));
-        assertThat(cursedNode.next.key, is(matvey));
+        assertThat(cursedNode.getKey(), is(ivan));
+        assertThat(cursedNode.getNext().getKey(), is(matvey));
     }
 
     @Test
@@ -51,7 +56,7 @@ public class SimpleHashMapNodeTest {
         cursedIterator.next();
         cursedIterator.next();
         cursedIterator.remove();
-        assertNull(cursedNode.next.next);
+        assertNull(cursedNode.getNext().getNext());
         assertFalse(cursedIterator.hasNext());
     }
 
@@ -60,7 +65,7 @@ public class SimpleHashMapNodeTest {
         cursedIterator.next();
         cursedIterator.next();
         cursedIterator.remove();
-        assertThat(cursedNode.next.key, is(matvey));
+        assertThat(cursedNode.getNext().getKey(), is(matvey));
         assertTrue(cursedIterator.hasNext());
     }
 

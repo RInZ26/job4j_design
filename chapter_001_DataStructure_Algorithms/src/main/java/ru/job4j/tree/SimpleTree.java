@@ -11,8 +11,8 @@ public interface SimpleTree<E> {
     Optional<Node<E>> findBy(E value);
 
     class Node<E> {
-        final E value;
-        final List<Node<E>> children = new ArrayList<>();
+        private final E value;
+        private final List<Node<E>> children = new ArrayList<>();
 
         public Node(E value) {
             this.value = value;

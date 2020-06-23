@@ -88,8 +88,8 @@ public class Config {
      Нужен для стрима в load
      */
     private static class Holder {
-        String key;
-        String value;
+        private String key;
+        private String value;
 
         Holder(String key, String value) {
             this.key = key;

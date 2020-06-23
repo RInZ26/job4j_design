@@ -101,4 +101,25 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <properties>
+                <db.url>jdbc:postgresql://127.0.0.1:5432/tracker</db.url>
+                <db.username>postgres</db.username>
+                <db.password>1polk1polk</db.password>
+                <db.driver>org.postgresql.Driver</db.driver>
+            </properties>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <db.url>jdbc:postgresql://127.0.0.1:5432/tracker</db.url>
+                <db.username>postgres</db.username>
+                <db.password>1polk1polk</db.password>
+                <db.driver>org.postgresql.Driver</db.driver>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>

@@ -35,7 +35,6 @@ public class ForwardLinked<T> implements Iterable<T> {
         head = head.next;
     }
 
-
     /**
      Удаление последнего элемента Учитывается, что head может быть равен null
      или head - единственный элемент в списке Возвращает значение удаленного
@@ -85,7 +84,6 @@ public class ForwardLinked<T> implements Iterable<T> {
         return lastNode;
     }
 
-
     /**
      Переворот списка. firstNode - указатель на первый, элемент, secondNode -
      на второй элемент. OldThreadOfNodes - чтобы не потерять прошлую цепочку,
@@ -111,7 +109,7 @@ public class ForwardLinked<T> implements Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            Node<T> node = head;
+            private Node<T> node = head;
 
             @Override
             public boolean hasNext() {
@@ -131,8 +129,8 @@ public class ForwardLinked<T> implements Iterable<T> {
     }
 
     private static class Node<T> {
-        T value;
-        Node<T> next;
+        private T value;
+        private Node<T> next;
 
         public Node(T value, Node<T> next) {
             this.value = value;

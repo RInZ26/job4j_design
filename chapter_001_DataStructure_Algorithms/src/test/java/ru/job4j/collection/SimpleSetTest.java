@@ -10,9 +10,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 public class SimpleSetTest {
-    SimpleSet<String> stringSimpleSet;
-    String suno = "TL";
-    String rin = "prince";
+    private SimpleSet<String> stringSimpleSet;
+    private String suno = "TL";
+    private String rin = "prince";
 
     @Before
     public void setUp() {

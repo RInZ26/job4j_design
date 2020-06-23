@@ -130,12 +130,12 @@ public class SimpleArray<T> implements Iterable<T> {
             /**
              * Указатель внутри итератора на следующий элемент
              */
-            int pointer;
+            private int pointer;
 
             /**
              * Копируем содержимое иттерируемой коллекции
              */
-            Object[] data = SimpleArray.this.data;
+            private Object[] data = SimpleArray.this.data;
 
             @Override
             public boolean hasNext() {

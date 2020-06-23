@@ -9,8 +9,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class SimpleArrayTest {
-    SimpleArray<Integer> integerSimpleArray;
-    SimpleArray<String> stringSimpleArray;
+    private SimpleArray<Integer> integerSimpleArray;
+    private SimpleArray<String> stringSimpleArray;
 
     @Before
     public void setUp() {

@@ -21,7 +21,8 @@ public class Converter {
             /**
              * Текущий итератор, что-то а-ля pointer в обычном итераторе
              */
-            Iterator<Integer> currentIterator = Collections.emptyIterator();
+            private Iterator<Integer> currentIterator =
+                    Collections.emptyIterator();
 
             /**
              * Проверка, есть ли хоть где-нибудь элемент

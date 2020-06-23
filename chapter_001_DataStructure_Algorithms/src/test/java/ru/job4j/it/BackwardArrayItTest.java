@@ -9,7 +9,6 @@ import static org.junit.Assert.assertThat;
 
 public class BackwardArrayItTest {
 
-
     @Test
     public void whenMultiCallHasNextThenTrue() {
         BackwardArrayIt it = new BackwardArrayIt(new int[]{1, 2, 3});

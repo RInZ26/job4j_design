@@ -13,7 +13,12 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class AnalizeTest {
-    User nastya, dima, matvey, masha, natasha, ane4ka;
+    private User nastya;
+    private User dima;
+    private User matvey;
+    private User masha;
+    private User natasha;
+    private User ane4ka;
 
     @Before
     public void setUp() {
@@ -28,40 +33,40 @@ public class AnalizeTest {
     @Test
     public void testAdded2Changed2Delete2() {
         List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
-        User newNastya = new User(nastya.id, "fu");
-        User newDima = new User(dima.id, "balda");
+        User newNastya = new User(nastya.getId(), "fu");
+        User newDima = new User(dima.getId(), "balda");
         List<User> currentList = Arrays.asList(matvey, natasha, newNastya,
                                                newDima);
         Info actual = Analize.diff(previousList, currentList);
-        assertThat(actual.added, is(2));
-        assertThat(actual.changed, is(2));
-        assertThat(actual.deleted, is(2));
+        assertThat(actual.getAdded(), is(2));
+        assertThat(actual.getChanged(), is(2));
+        assertThat(actual.getDeleted(), is(2));
     }
 
     @Test
     public void testAddedSameLists() {
         List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
         Info actual = Analize.diff(previousList, previousList);
-        assertThat(actual.added, is(0));
-        assertThat(actual.changed, is(0));
-        assertThat(actual.deleted, is(0));
+        assertThat(actual.getAdded(), is(0));
+        assertThat(actual.getChanged(), is(0));
+        assertThat(actual.getDeleted(), is(0));
     }
 
     @Test
     public void testWhenCurrentIsEmpty() {
         List<User> previousList = Arrays.asList(nastya, dima, masha, ane4ka);
         Info actual = Analize.diff(previousList, Collections.emptyList());
-        assertThat(actual.added, is(0));
-        assertThat(actual.changed, is(0));
-        assertThat(actual.deleted, is(4));
+        assertThat(actual.getAdded(), is(0));
+        assertThat(actual.getChanged(), is(0));
+        assertThat(actual.getDeleted(), is(4));
     }
 
     @Test
     public void testWhenPreviousIsEmpty() {
         List<User> currentList = Arrays.asList(nastya, dima, masha, ane4ka);
         Info actual = Analize.diff(Collections.emptyList(), currentList);
-        assertThat(actual.added, is(4));
-        assertThat(actual.changed, is(0));
-        assertThat(actual.deleted, is(0));
+        assertThat(actual.getAdded(), is(4));
+        assertThat(actual.getChanged(), is(0));
+        assertThat(actual.getDeleted(), is(0));
     }
 }

@@ -6,7 +6,6 @@ import java.util.Calendar;
  Класс - модель данных
  */
 public class User {
-    public String iq;
     private String name;
     private int age;
     private Calendar birthday;

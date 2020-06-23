@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class ConverterTest {
 
-    Iterator<Integer> it;
+    private Iterator<Integer> it;
 
     @Before
     public void setUp() {

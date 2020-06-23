@@ -44,6 +44,19 @@ public class ImportDB implements AutoCloseable {
         this.dump = dump;
     }
 
+    public static void main(String[] args) throws Exception {
+        Properties cfg = new Properties();
+        try (InputStream in = ImportDB.class.getClassLoader()
+                                            .getResourceAsStream(
+                                                    "app.properties")) {
+            cfg.load(in);
+        }
+        try (ImportDB db = new ImportDB(cfg, "./dump.txt")) {
+            db.init();
+            db.save(db.load());
+        }
+    }
+
     /**
      Инициализация подключения к СУБД
      */
@@ -115,19 +128,6 @@ public class ImportDB implements AutoCloseable {
         public User(String name, String email) {
             this.name = name;
             this.email = email;
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Properties cfg = new Properties();
-        try (InputStream in = ImportDB.class.getClassLoader()
-                                            .getResourceAsStream(
-                                                    "app.properties")) {
-            cfg.load(in);
-        }
-        try (ImportDB db = new ImportDB(cfg, "./dump.txt")) {
-            db.init();
-            db.save(db.load());
         }
     }
 }
