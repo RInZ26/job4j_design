@@ -10,13 +10,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
- Класс для записи данных из файла в бд
+ Класс для записи данных из файла в бд, так как это наш ресурс - используется
+ autocloseable
  */
-public class ImportDB {
+public class ImportDB implements AutoCloseable {
 
     private static final String SAVE_QUERY =
             "INSERT INTO users(name, email) " + "VALUES(?, ?)";
@@ -30,11 +32,28 @@ public class ImportDB {
     private String dump;
 
     /**
+     Наше подключение к бд
+     */
+    private Connection connection;
+
+    /**
      Дефолтный конструткор
      */
     public ImportDB(Properties cfg, String dump) {
         this.cfg = cfg;
         this.dump = dump;
+    }
+
+    /**
+     Инициализация подключения к СУБД
+     */
+    private void init() throws ClassNotFoundException, SQLException {
+        Class.forName(cfg.getProperty("jdbc.driver"));
+        connection = DriverManager.getConnection(cfg.getProperty("jdbc.url"),
+                                                 cfg.getProperty(
+                                                         "jdbc.username"),
+                                                 cfg.getProperty(
+                                                         "jdbc.password"));
     }
 
     /**
@@ -56,24 +75,33 @@ public class ImportDB {
 
     /**
      Insert данных в ДБ
-        Здесь statement можно явно не закрывать, потому что Connection в этом
+     Здесь statement можно явно не закрывать, потому что Connection в этом
      же блоке
+
      @param users
      вставляемый лист
      */
-    public void save(List<User> users)
-            throws ClassNotFoundException, SQLException {
-        Class.forName(cfg.getProperty("jdbc.driver"));
-        try (Connection cn = DriverManager.getConnection(
-                cfg.getProperty("jdbc.url"), cfg.getProperty("jdbc.username"),
-                cfg.getProperty("jdbc.password"))) {
-            PreparedStatement statement;
+    public void save(List<User> users) {
+        if (connection != null) {
             for (User user : users) {
-                statement = cn.prepareStatement(SAVE_QUERY);
-                statement.setString(1, user.name);
-                statement.setString(2, user.email);
-                statement.executeUpdate();
+                try (PreparedStatement statement = connection.prepareStatement(
+                        SAVE_QUERY)) {
+                    statement.setString(1, user.name);
+                    statement.setString(2, user.email);
+                    statement.executeUpdate();
+                } catch (SQLException sqlE) {
+                    sqlE.printStackTrace();
+                }
             }
+        } else {
+            System.out.println("Connection is nonexistent");
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (!Objects.isNull(connection)) {
+            connection.close();
         }
     }
 
@@ -88,7 +116,6 @@ public class ImportDB {
             this.name = name;
             this.email = email;
         }
-
     }
 
     public static void main(String[] args) throws Exception {
@@ -98,7 +125,9 @@ public class ImportDB {
                                                     "app.properties")) {
             cfg.load(in);
         }
-        ImportDB db = new ImportDB(cfg, "./dump.txt");
-        db.save(db.load());
+        try (ImportDB db = new ImportDB(cfg, "./dump.txt")) {
+            db.init();
+            db.save(db.load());
+        }
     }
 }
