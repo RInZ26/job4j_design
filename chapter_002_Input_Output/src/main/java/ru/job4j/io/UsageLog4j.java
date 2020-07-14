@@ -22,5 +22,7 @@ public class UsageLog4j {
                           + "paramDouble : {}, paramBoolean : {} ", paramByte,
                   paramShort, paramChar, paramInt, paramLong, paramFloat,
                   paramDouble, paramBoolean);
+
+        LOG.error("beda", new Exception());
     }
 }

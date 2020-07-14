@@ -13,6 +13,7 @@
         <module>chapter_001_DataStructure_Algorithms</module>
         <module>chapter_002_Input_Output</module>
         <module>chapter_003_SQL_JDBC</module>
+        <module>chapter_004_GarbageCollection</module>
     </modules>
 
 
@@ -83,8 +84,8 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.13</version>
-
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
