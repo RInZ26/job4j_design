@@ -9,27 +9,27 @@ import java.lang.ref.SoftReference;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Иммитация работы кэша на SoftReference
+ */
 public class FileCache implements Cache<Path, String> {
     private final static Logger LOG = LoggerFactory.getLogger(
             FileCache.class.getName());
     private Map<String, SoftReference<String>> cache = new HashMap<>();
 
     /**
-        Пытаемся взять объект из мапы, если его нету - загружаем ручками.
-
+     * Пытаемся взять объект из мапы, если его нету - загружаем ручками.
      */
     @Override
     public String get(Path key) {
-        if (!cache.containsKey(key)) {
-            return uploadFile(key);
-        } else {
-            String data = cache.get(key)
-                               .get();
-            return !Objects.isNull(data) ? data : uploadFile(key);
-        }
+        return !cache.containsKey(key) ? uploadFile(key) : Optional.of(
+                cache.get(key)
+                     .get())
+                                                                   .orElse(uploadFile(
+                                                                           key));
     }
 
     /**
