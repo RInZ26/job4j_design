@@ -32,7 +32,7 @@ public class User {
     }
 
     public static void main(String[] args) throws Exception {
-        test(200);
+        test(Long.MAX_VALUE);
     }
 
     /**
@@ -47,7 +47,7 @@ public class User {
      *
      * @throws Exception
      */
-    public static void test(int count) throws Exception {
+    public static void test(long count) throws Exception {
         long kb = 1024;
         List<User> survivedList = new ArrayList<>();
         User humongous;
