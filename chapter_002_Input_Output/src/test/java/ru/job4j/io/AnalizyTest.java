@@ -69,14 +69,13 @@ public class AnalizyTest {
     }
 
     /**
-     Следуем DRY и не пишем одно и то же миллион раз.
-     <p>
-     Внутри обязательно флашим данные, так как у нас в одном и том же трае
-     идёт ещё и чтение того, что мы записали, а FLUSH АВТОМАТИЧЕСКИ СРАБОТАЕТ
-     ТОЛЬКО ПОСЛЕ ТРАЯ!!!! Поэтому нужно ручками
-
-     @param testedData
-     различный набор данных
+     * Следуем DRY и не пишем одно и то же миллион раз.
+     * <p>
+     * Внутри обязательно флашим данные, так как у нас в одном и том же трае
+     * идёт ещё и чтение того, что мы записали, а FLUSH АВТОМАТИЧЕСКИ СРАБОТАЕТ
+     * ТОЛЬКО ПОСЛЕ ТРАЯ!!!! Поэтому нужно ручками
+     *
+     * @param testedData различный набор данных
      */
     private String checkThisData(List<String> testedData) {
         StringBuilder allTextFromFile = new StringBuilder();
@@ -88,9 +87,12 @@ public class AnalizyTest {
             Analizy.unavailable(sourceFile.getAbsolutePath(),
                                 targetFile.getAbsolutePath());
             in.lines()
-              .forEach(word -> allTextFromFile.append(word).append(" "));
-            allTextFromFile.deleteCharAt(allTextFromFile.length()
-                                                 - 1); // удаление лишнего пробела в конце
+              .forEach(word -> allTextFromFile.append(word)
+                                              .append(" "));
+            if (allTextFromFile.length() > 1) {
+                allTextFromFile.deleteCharAt(allTextFromFile.length()
+                                                     - 1); // удаление лишнего пробела в конце
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
