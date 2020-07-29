@@ -14,7 +14,6 @@
         <module>chapter_002_Input_Output</module>
         <module>chapter_003_SQL_JDBC</module>
         <module>chapter_004_GarbageCollection</module>
-        <module>OOD</module>
         <module>chapter_005_OOD</module>
     </modules>
 
