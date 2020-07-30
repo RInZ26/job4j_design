@@ -71,7 +71,5 @@ public class ReportEngine {
                                                                (e) -> e.getSalary()
                                                                        < 700));
     }
-
-
 }
 
