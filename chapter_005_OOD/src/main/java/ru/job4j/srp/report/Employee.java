@@ -1,4 +1,4 @@
-package ru.job4j.srp;
+package ru.job4j.srp.report;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -14,6 +14,12 @@ public class Employee {
         this.name = name;
         this.hired = hired;
         this.fired = fired;
+        this.salary = salary;
+    }
+
+    //fixme delete
+    public Employee(String name, double salary) {
+        this.name = name;
         this.salary = salary;
     }
 
