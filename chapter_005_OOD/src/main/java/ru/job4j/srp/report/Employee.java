@@ -17,7 +17,7 @@ public class Employee {
         this.salary = salary;
     }
 
-    //fixme delete
+    //для более удобного тестирования без дат fixme
     public Employee(String name, double salary) {
         this.name = name;
         this.salary = salary;
