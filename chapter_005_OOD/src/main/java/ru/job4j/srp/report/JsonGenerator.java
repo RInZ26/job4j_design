@@ -78,7 +78,7 @@ public class JsonGenerator implements ReportGenerator {
         int index;
         if ((index = stringBuilder.lastIndexOf(erased)) != -1) {
             stringBuilder.delete(index,
-                                 stringBuilder.length() - erased.length() - 1);
+                                 index + erased.length());
         }
     }
 
