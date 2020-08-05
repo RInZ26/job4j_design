@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class HtmlGenerator extends ReportGenerator {
+public class HtmlGenerator implements ReportGenerator {
     /**
      * Сгенированный где-то отчет
      */
@@ -26,7 +26,7 @@ public class HtmlGenerator extends ReportGenerator {
     @Override
     public String generateReport() {
         StringBuilder reportBody = new StringBuilder("");
-        List<Employee> employees = getData(store, report.getFilter());
+        List<Employee> employees = store.findBy(report.getFilter());
         sortByComparator(employees);
         StringBuilder meta = new StringBuilder("");
         fillMetaData(meta);
@@ -44,13 +44,11 @@ public class HtmlGenerator extends ReportGenerator {
         return reportBody.toString();
     }
 
-    @Override
-    protected void sortByComparator(List<Employee> employees) {
+    private void sortByComparator(List<Employee> employees) {
         Collections.sort(employees, report.getComparator());
     }
 
-    @Override
-    protected void fillTitles(StringBuilder titles) {
+    private void fillTitles(StringBuilder titles) {
         for (Map.Entry<String, String> entry : report.getFields()
                                                      .entrySet()) {
             titles.append(fillTitle(Optional.ofNullable(entry.getValue())
@@ -61,8 +59,7 @@ public class HtmlGenerator extends ReportGenerator {
         surroundByTag(titles, "tr");
     }
 
-    @Override
-    protected void fillEmployees(List<Employee> employees, StringBuilder body) {
+    private void fillEmployees(List<Employee> employees, StringBuilder body) {
         for (Employee employee : employees) {
             body.append(fillEmployee(employee));
             body.append(System.lineSeparator());

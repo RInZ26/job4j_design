@@ -9,6 +9,10 @@ public class ReportFabric {
         switch (type) {
             case HTML:
                 return new HtmlGenerator(report, store);
+            case JSON:
+                return new JsonGenerator(report, store);
+            case XML:
+                return new XmlGenerator(report, store);
             case DEFAULT:
             default:
                 return new DefaultGenerator(report, store);
@@ -16,6 +20,6 @@ public class ReportFabric {
     }
 
     public enum Type {
-        HTML, DEFAULT
+        HTML, DEFAULT, JSON, XML
     }
 }

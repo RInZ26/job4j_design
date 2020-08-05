@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class DefaultGenerator extends ReportGenerator {
+public class DefaultGenerator implements ReportGenerator {
     private Report report;
     private Store store;
 
@@ -18,14 +18,13 @@ public class DefaultGenerator extends ReportGenerator {
     public String generateReport() {
         StringBuilder reportBody = new StringBuilder("");
         fillTitles(reportBody);
-        List<Employee> employees = getData(store, report.getFilter());
+        List<Employee> employees = store.findBy(report.getFilter());
         sortByComparator(employees);
         fillEmployees(employees, reportBody);
         return reportBody.toString();
     }
 
-    @Override
-    protected void fillTitles(StringBuilder reportBody) {
+    private void fillTitles(StringBuilder reportBody) {
         for (Map.Entry<String, String> entry : report.getFields()
                                                      .entrySet()) {
             reportBody.append(Optional.ofNullable(entry.getValue())
@@ -35,13 +34,11 @@ public class DefaultGenerator extends ReportGenerator {
         reportBody.append(System.lineSeparator());
     }
 
-    @Override
-    protected void sortByComparator(List<Employee> employees) {
+    private void sortByComparator(List<Employee> employees) {
         Collections.sort(employees, report.getComparator());
     }
 
-    @Override
-    protected void fillEmployees(List<Employee> employees,
+    private void fillEmployees(List<Employee> employees,
                                  StringBuilder reportBody) {
         for (Employee employee : employees) {
             for (String key : report.getFields()
