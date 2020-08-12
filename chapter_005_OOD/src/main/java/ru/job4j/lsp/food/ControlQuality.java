@@ -7,8 +7,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class ControlQuality {
     /**
@@ -16,6 +18,29 @@ public class ControlQuality {
      */
     public static final Logger LOG = LoggerFactory.getLogger(
             ControlQuality.class.getName());
+    /**
+     * Список доступных нам foodsupplier'ов
+     */
+    private List<FoodSupplier> shopList = new ArrayList<>();
+
+    public ControlQuality(List<FoodSupplier> shopList) {
+        this.shopList = shopList;
+    }
+
+    public ControlQuality() {
+    }
+
+    /**
+     * Раз есть лист саплаеров, то, очевидно, нужны и методы изменения коллекции
+     * @param foodSupplier
+     */
+    public void addStore(FoodSupplier foodSupplier) {
+        shopList.add(foodSupplier);
+    }
+
+    public void removeStore(FoodSupplier foodSupplier) {
+        shopList.remove(foodSupplier);
+    }
 
     /**
      * Определяет качество еды (обратно свежести) как отношение разниц
@@ -24,7 +49,7 @@ public class ControlQuality {
      * nowTime - продолжительность между созданием и текущим временем
      * Здесь качество определяется как 0 - идеально, 1 - ужас
      */
-    public static double consumeQuality(Food food) {
+    public double consumeQuality(Food food) {
         Duration fullTime = Duration.between(food.getCreateDate(),
                                              food.getExpiredDate());
         Duration nowTime = Duration.between(food.getCreateDate(),
@@ -36,52 +61,16 @@ public class ControlQuality {
     }
 
     /**
-     * Распределяет еду из коллекции по магазинам, УДАЛЯЯ те, что добавили из
-     * этой коллекции. Может быть так, что коллекция не поддерживает
-     * удаление, в таком случае в новую коллекцию будет добавлена запись, а
-     * из старой удалена не будет - можно сделать как угодно, хоть в начале
-     * метода проверять на возможность удалять коллекциями, другой вопрос -
-     * как лучше
-     *
-     * @return вся ли еда была распределена
-     */
-    public static boolean splitFoodRemove(Collection<Food> foods,
-                                          FoodSupplier... foodSuppliers) {
-        boolean addResult;
-        Iterator<Food> iterator = foods.iterator();
-        while (iterator.hasNext()) {
-            Food currentFood = iterator.next();
-            for (FoodSupplier foodSupplier : foodSuppliers) {
-                addResult = foodSupplier.addFood(currentFood);
-                if (addResult) {
-                    try {
-                        iterator.remove();
-                        break;
-                    } catch (UnsupportedOperationException e) {
-                        LOG.error("Неподдерживаемая операция удаления в {} у "
-                                          + "итератора {}, "
-                                          + "продукт {} не был удалён "
-                                          + "корректно", foods.getClass(),
-                                  iterator.getClass(), currentFood, e);
-                    }
-                }
-            }
-        }
-        return foods.isEmpty();
-    }
-
-    /**
      * Распределяет еду между foodSupplier'ами, не изменяя изначальную коллекцию
      *
      * @return вся ли еда была распределена
      */
-    public static boolean splitFoodSoft(Collection<Food> foods,
-                                        FoodSupplier... foodSuppliers) {
+    public boolean splitFoodSoft(Collection<Food> foods) {
         boolean result = true;
         Iterator<Food> iterator = foods.iterator();
         while (iterator.hasNext()) {
             Food currentFood = iterator.next();
-            for (FoodSupplier foodSupplier : foodSuppliers) {
+            for (FoodSupplier foodSupplier : shopList) {
                 result = foodSupplier.addFood(currentFood) && (result);
             }
         }

@@ -18,6 +18,6 @@ public class Trash extends FoodSupplier {
 
     @Override
     public boolean isSuitableFood(Food food) {
-        return ControlQuality.consumeQuality(food) >= qualityLowBound;
+        return new ControlQuality().consumeQuality(food) >= qualityLowBound;
     }
 }

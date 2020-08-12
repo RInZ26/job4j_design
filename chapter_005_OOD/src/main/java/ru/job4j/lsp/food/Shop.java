@@ -37,7 +37,7 @@ public class Shop extends FoodSupplier {
      */
     @Override
     public boolean addFood(Food food) {
-        double quality = ControlQuality.consumeQuality(food);
+        double quality = new ControlQuality().consumeQuality(food);
         if (!isSuitableQuality(quality)) {
             return false;
         }
@@ -53,7 +53,7 @@ public class Shop extends FoodSupplier {
 
     @Override
     public boolean isSuitableFood(Food food) {
-        double quality = ControlQuality.consumeQuality(food);
+        double quality = new ControlQuality().consumeQuality(food);
         return quality < qualityCritical || quality > qualityLowBound;
     }
 

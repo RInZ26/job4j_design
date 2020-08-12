@@ -17,6 +17,6 @@ public class WareHouse extends FoodSupplier {
 
     @Override
     public boolean isSuitableFood(Food food) {
-        return ControlQuality.consumeQuality(food) <= qualityHighBound;
+        return new ControlQuality().consumeQuality(food) <= qualityHighBound;
     }
 }
