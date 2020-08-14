@@ -8,34 +8,74 @@ import ru.job4j.lsp.cleverparking.parking.wrapping.CarType;
 import ru.job4j.lsp.cleverparking.parking.wrapping.CarType.Rule;
 import ru.job4j.lsp.cleverparking.parking.wrapping.WrappedCar;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-//fixme у правил должны быть ещё приоритеты
+/**
+ * Типизированная парковка, которая поддерживает максимальную кастомизацию и
+ * её поведение зависит только от настроек CarType.
+ * Есть поддержка "примитивных парковок" с двумя типами машин -
+ * грузовые/легковые. Для этого есть конструктор с вызовом setDefault();
+ */
 public class TypedParking extends AbstractParking {
-    private Map<Car, Cell[]> carMap = new HashMap<>();
-
-    private Markup markup;
     /**
-     * По имени возвращает тип
+     * Коллекция машин с массивом клеток, которые она занимает. Благодаря
+     * этому легко и быстро работает remove
+     */
+    private Map<Car, Cell[]> carMap = new HashMap<>();
+    /**
+     * Разметка парковки
+     */
+    private Markup markup;
+
+    /**
+     * По имени возвращает тип машины, используется для враппинга, чтобы
+     * правильно соотносить
      */
     private Map<String, CarType> mapCarTypes = new HashMap<>();
+
     /**
-     * По имени типа возвращает опреденный враппер
+     * Диспатчер-фабрика
+     * По имени типа, полученного из mapCarTypes возвращает определенную обёртку
      */
     private Map<CarType, Function<Car, WrappedCar>> dispatcherWrappedCars = new HashMap<>();
 
+    /**
+     * Зависимость типа ячеек от количества свободных ячеек
+     */
+    private Map<CellType, Integer> mapFreeCells = new HashMap<>();
+
+    /**
+     * Конструктор для совместимости логики простого паркинга.
+     *
+     * @param lightAmount количество легких машин
+     * @param highAmount  количество тяжелых машин
+     */
     public TypedParking(int lightAmount, int highAmount) {
         super(lightAmount, highAmount);
         setDefault(lightAmount, highAmount);
     }
 
+    /**
+     * Метод для совместимости, инициализирующий функционал для работы с
+     * логикой по заданию.
+     * Создаёт 2 типа мест парковки lightCell - для легковых, highCell - для
+     * грузовых
+     * Заполняет правила обработки каждого типа машин в зависимости от клеток.
+     * То есть passCar может взаимодействовать только с клетками lightCell
+     * А truckCar может взаимодействовать и с теми, и с другими
+     * Далее создаются сами typeCars на основе правил и названий и заносятся
+     * в мапы
+     * В конце заполняется markup - структура парковки, исходя из дефолтной
+     * логики: сначала подряд идут lightCell, потом hignCell
+     */
     private void setDefault(int lightAmount, int highAmount) {
         var lightCell = new CellType("SMALL");
         var highCell = new CellType("BIG");
+        mapFreeCells.put(lightCell, lightAmount);
+        mapFreeCells.put(highCell, highAmount);
         Map<CellType, Rule> passCarRules = new HashMap<>() {
             {
                 put(lightCell, new Rule(Rule.Priority.FIRST, (holder) -> {
@@ -46,7 +86,7 @@ public class TypedParking extends AbstractParking {
                     return checkedCell.getType()
                                       .equals(lightCell) ? new Cell[]{
                             checkedCell} : null;
-                }, (car, parking) -> parking.getFreeLightAmount() > 0));
+                }, (car, parking) -> parking.mapFreeCells.get(lightCell) > 0));
             }
         };
         Map<CellType, Rule> truckCarRules = new HashMap<>() {
@@ -67,7 +107,7 @@ public class TypedParking extends AbstractParking {
                                 ? markup.getRange(holder.getX(), holder.getY(),
                                                   holder.getSize()) : null;
                     }, (car, parking) -> car.getSize()
-                            <= parking.getFreeLightAmount()));
+                            <= parking.mapFreeCells.get(lightCell)));
                 put(highCell,
                     new CarType.Rule(CarType.Rule.Priority.FIRST, (holder) -> {
                         Cell cell = holder.getParking()
@@ -76,51 +116,40 @@ public class TypedParking extends AbstractParking {
                                                    holder.getY());
                         return cell.getType()
                                    .equals(highCell) ? new Cell[]{cell} : null;
-                    }, (car, parking) -> parking.getFreeHighAmount() > 0));
+                    }, //fixme потенциальное NPE, но для теста сойдёт
+                                     (car, parking) ->
+                                             parking.mapFreeCells.get(highCell)
+                                                     > 0));
             }
         };
-        var passCar = new CarType("PASSENGER", 1, 1, passCarRules);
-        var truckCar = new CarType("TRUCK", 2, CarType.INFINITY_SIZE,
-                                   truckCarRules);
-        mapCarTypes.put(passCar.getName(), passCar);
-        mapCarTypes.put(truckCar.getName(), truckCar);
-        dispatcherWrappedCars.put(passCar,
-                                  (car -> new WrappedCar(car, passCar)));
-        dispatcherWrappedCars.put(truckCar,
-                                  (car -> new WrappedCar(car, truckCar)));
+        var passCarType = new CarType("PASSENGER", 1, 1, passCarRules);
+        var truckCarType = new CarType("TRUCK", 2, CarType.INFINITY_SIZE,
+                                       truckCarRules);
+        mapCarTypes.put(passCarType.getName(), passCarType);
+        mapCarTypes.put(truckCarType.getName(), truckCarType);
+        dispatcherWrappedCars.put(passCarType,
+                                  (car -> new WrappedCar(car, passCarType)));
+        dispatcherWrappedCars.put(truckCarType,
+                                  (car -> new WrappedCar(car, truckCarType)));
         markup = Markup.createSquareMarkup(lightAmount, highAmount);
         //fill default map
         for (int row = 0; row < markup.getMap().length; row++) {
             for (int column = 0; column < markup.getMap()[row].length;
                  column++) {
                 if (lightAmount-- > 0) {
-                    setCell(row, column, lightCell);
+                    markup.setCell(row, column, lightCell);
                 } else if (highAmount-- > 0) {
-                    setCell(row, column, highCell);
+                    markup.setCell(row, column, highCell);
                 } else {
-                    setCell(row, column, CellType.UNPLACEABLE_CELL);
+                    markup.setCell(row, column, CellType.UNPLACEABLE_CELL);
                 }
             }
         }
     }
 
     /**
-     * Здесь мы победим private у матрицы Markup и будем сетить сюда //fixme
-     *
-     * @param x
-     * @param y
-     * @param type
-     */
-    private void setCell(int x, int y, CellType type) {
-        markup.setCell(x, y, type);
-    }
-
-    /**
-     * Возвращает тип машины, согласно условиям парковки
-     *
-     * @param car
-     *
-     * @return
+     * Возвращает тип машины, в которую парковка "обернёт"
+     * исходную машину исходя из допустимых carTypes
      */
     public String getInnerType(Car car) {
         int size = car.getSize();
@@ -132,9 +161,19 @@ public class TypedParking extends AbstractParking {
         return "";
     }
 
+    /**
+     * Проверяет, может ли быть размещена машина
+     */
     @Override
     public boolean isCanBeParking(Car car) {
         return !Objects.isNull(getSuitablePriorityCells(car));
+    }
+
+    /**
+     * Проверяет, может ли быть размещена машина по указанным координатам
+     */
+    public boolean isCanBeParking(Car car, int x, int y) {
+        return !Objects.isNull(getSuitableTargetCells(car, x, y));
     }
 
     /**
@@ -150,20 +189,7 @@ public class TypedParking extends AbstractParking {
     }
 
     /**
-     * Случай с таргетной подстановкой
-     *
-     * @param car
-     * @param x
-     * @param y
-     *
-     * @return
-     */
-    public boolean isCanBeParking(Car car, int x, int y) {
-        return !Objects.isNull(getSuitableTargetCells(car, x, y));
-    }
-
-    /**
-     * Т.к. некоторые машины могут занимать могут клеток, то логично, что
+     * Т.к. некоторые машины могут занимать несколько клеток, то логично, что
      * желание встать на клетку подразумевает возможность занять несколько
      * клеток после => возврвщается такой же массив клеток
      */
@@ -174,19 +200,16 @@ public class TypedParking extends AbstractParking {
         Cell cell = markup.getCell(x, y);
         var wrappedCar = wrapCar(car);
         return wrappedCar.getAnyCells(cell.getType(),
-                                           new CarType.Holder(cell.getX(),
-                                                              cell.getY(),
-                                                              wrappedCar.getCar()
-                                                                        .getSize(),
-                                                              this));
+                                      new CarType.Holder(cell.getX(),
+                                                         cell.getY(),
+                                                         wrappedCar.getCar()
+                                                                   .getSize(),
+                                                         this));
     }
 
     /**
-     * Проверка, можно ла разместить куда угодно
-     *
-     * @param car
-     *
-     * @return возвращает клетку в которую можно разместить
+     * Размещает машину в первое доступное место (согласено приоритетам
+     * правил добавления)
      */
     private Cell[] getSuitablePriorityCells(Car car) {
         var wrappedCar = wrapCar(car);
@@ -207,39 +230,65 @@ public class TypedParking extends AbstractParking {
         return null;
     }
 
-    public Markup getMarkup() {
-        return markup;
-    }
-
+    /**
+     * Добавление машины на парковку куда угодно по приоритету
+     *
+     * @return успех ?
+     */
     @Override
     public boolean addCar(Car car) {
         return putToMap(car, getSuitablePriorityCells(car));
     }
 
+    /**
+     * Добавление машины на парковку в определенную ячейку(ки, если возможно)
+     *
+     * @return успех ?
+     */
     public boolean addCar(Car car, int x, int y) {
         return putToMap(car, getSuitableTargetCells(car, x, y));
     }
 
     /**
-     * DRY
-     *
-     * @param car
-     * @param cells
+     * DRY для addCar
      */
     private boolean putToMap(Car car, Cell[] cells) {
         boolean result = !Objects.isNull(cells);
         if (result) {
+            updateCellsCount(cells, (a, b) -> a - b);
             updateMarkUp(cells, car);
             carMap.put(car, cells);
-
         }
         return result;
     }
 
+    /**
+     * фиксация нового количества клеток для всех типов.
+     * Не факт, что у всех cells один тип, поэтому каждый подсчитывается
+     * по-отдельности и заносится в мапу ячеек
+     *
+     * @param cells         влияющие на изменение ячейки
+     * @param mergeFunction оператор сведения (для add и remove разные)
+     */
+    private void updateCellsCount(Cell[] cells,
+                                  BinaryOperator<Integer> mergeFunction) {
+        var groupedMap = Arrays.stream(cells)
+                               .collect(Collectors.groupingBy(Cell::getType));
+        for (Map.Entry<CellType, List<Cell>> entry : groupedMap.entrySet()) {
+            mapFreeCells.merge(entry.getKey(), entry.getValue()
+                                                    .size(), mergeFunction);
+        }
+    }
+
+    /**
+     * Машина "уезжает" с парковки с освобождением ячеек
+     */
     @Override
     public boolean removeCar(Car car) {
         boolean result = carMap.containsKey(car);
         if (result) {
+            var cells = carMap.get(car);
+            updateCellsCount(cells, (a, b) -> a + b);
             updateMarkUp(carMap.get(car), null);
             carMap.remove(car);
         }
@@ -247,12 +296,8 @@ public class TypedParking extends AbstractParking {
     }
 
     /**
-     * Убирает машину по клетке
-     *
-     * @param x
-     * @param y
-     *
-     * @return
+     * Убираем машину, которая занимает клетку (освободятся и другие клетки),
+     * а также фиксируем новое количество клеток
      */
     public boolean removeFromCells(int x, int y) {
         return removeCar(markup.getCell(x, y)
@@ -275,5 +320,16 @@ public class TypedParking extends AbstractParking {
         for (Cell cell : cells) {
             cell.setOwner(owner);
         }
+    }
+
+    public Markup getMarkup() {
+        return markup;
+    }
+
+    /**
+     * Геттер для mapFreeCells
+     */
+    public Integer getFreeCellsCount(CellType cellType) {
+        return mapFreeCells.get(cellType);
     }
 }

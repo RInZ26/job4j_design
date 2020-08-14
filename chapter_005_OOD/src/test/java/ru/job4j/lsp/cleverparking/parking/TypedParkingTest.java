@@ -122,9 +122,8 @@ public class TypedParkingTest {
         expected.setCell(0, 1, lightCell);
         expected.setCell(1, 0, highCell);
         expected.setCell(1, 1, CellType.UNPLACEABLE_CELL);
-        expected
-               .getCell(1, 0)
-               .setOwner(car);
+        expected.getCell(1, 0)
+                .setOwner(car);
         assertThat(parking.getMarkup()
                           .getMap(), is(expected.getMap()));
     }
@@ -195,5 +194,50 @@ public class TypedParkingTest {
         expected.setCell(1, 1, CellType.UNPLACEABLE_CELL);
         assertThat(parking.getMarkup()
                           .getMap(), is(expected.getMap()));
+    }
+
+    @Test
+    public void whenInitTypeCarCounts() {
+        TypedParking parking = new TypedParking(3, 2);
+        assertThat(parking.getFreeCellsCount(lightCell), is(3));
+        assertThat(parking.getFreeCellsCount(highCell), is(2));
+    }
+
+    @Test
+    public void whenAddLightCarThenLightCountDecreases() {
+        Car car = new LightCar(1);
+        TypedParking parking = new TypedParking(3, 0);
+        parking.addCar(car);
+        assertThat(parking.getFreeCellsCount(lightCell), is(2));
+        assertThat(parking.getFreeCellsCount(highCell), is(0));
+    }
+
+    @Test
+    public void whenAddHighCarOnLightPlaceThenLightCountDecreases() {
+        Car car = new HighCar(2);
+        TypedParking parking = new TypedParking(3, 0);
+        parking.addCar(car);
+        assertThat(parking.getFreeCellsCount(lightCell), is(1));
+        assertThat(parking.getFreeCellsCount(highCell), is(0));
+    }
+
+    @Test
+    public void whenRemoveLightCarThenLightCountIncreases() {
+        Car car = new LightCar(1);
+        TypedParking parking = new TypedParking(3, 0);
+        parking.addCar(car);
+        parking.removeCar(car);
+        assertThat(parking.getFreeCellsCount(lightCell), is(3));
+        assertThat(parking.getFreeCellsCount(highCell), is(0));
+    }
+
+    @Test
+    public void whenRemoveHighCarOnLightPlaceThenLightCountIncreases() {
+        Car car = new HighCar(2);
+        TypedParking parking = new TypedParking(3, 0);
+        parking.addCar(car);
+        parking.removeCar(car);
+        assertThat(parking.getFreeCellsCount(lightCell), is(3));
+        assertThat(parking.getFreeCellsCount(highCell), is(0));
     }
 }

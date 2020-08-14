@@ -3,6 +3,9 @@ package ru.job4j.lsp.cleverparking.parking.map;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+/**
+ * Класс - разметка из Cell для создания подобия структуры парковки.
+ */
 public class Markup {
     private final Cell[][] map;
 
@@ -74,11 +77,17 @@ public class Markup {
         return true;
     }
 
+    /**
+     * Возвращает промежуток ячеек
+     */
     public Cell[] getRange(int x, int y, int length) {
         checkCoordinates(x, y);
         return Arrays.copyOfRange(map[x], y, length);
     }
 
+    /**
+     * Проверяет, свободна ли ячейка в данный момент или на ней кто-то стоит
+     */
     public boolean isFreeCell(int x, int y) {
         return getCell(x, y).isFree();
     }

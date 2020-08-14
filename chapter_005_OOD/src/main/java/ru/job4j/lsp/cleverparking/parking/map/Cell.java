@@ -4,6 +4,11 @@ import ru.job4j.lsp.cleverparking.car.Car;
 
 import java.util.Objects;
 
+/**
+ * Класс - модель данных.
+ * Структурная ячейка для MarkUp
+ * При желании можно расширить, добавив дженерик на owner
+ */
 public class Cell {
     private int x;
     private int y;
@@ -23,16 +28,8 @@ public class Cell {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public CellType getType() {
@@ -71,10 +68,5 @@ public class Cell {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, type, owner);
-    }
-
-    @Override //fixme delete
-    public String toString() {
-        return isFree() ? "НИКТО" : owner.toString();
     }
 }

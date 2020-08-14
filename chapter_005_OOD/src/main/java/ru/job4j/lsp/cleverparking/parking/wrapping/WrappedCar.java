@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Класс-обертка, чтобы совмещать Car и её тип
+ * Класс-обертка-структурка для Car, чтобы совмещать Car и CarType
  */
 public class WrappedCar {
     private Car car;
@@ -39,7 +39,9 @@ public class WrappedCar {
 
     /**
      * Проверка + возвращение результатов, может ли машина такого типа встать
-     * на клетку в текущих реалиях
+     * на клетку в текущих реалиях парковки с учетом приоритетов. Так, если
+     * первый приоритет всё ещё доступен для постановки - другие приоритеты
+     * рассматриваться не будут
      */
     public Cell[] getPriorityCells(CellType cellType, Holder holder) {
         var firstPriorityRule = type.getMapRules()
@@ -83,6 +85,10 @@ public class WrappedCar {
         return null;
     }
 
+    /**
+     * Проверка + возвращение результатов, может ли машина такого типа встать
+     * на клетку без учета приоритетов
+     */
     public Cell[] getAnyCells(CellType cellType, Holder holder) {
         var rule = type.getMapRules()
                        .get(cellType);

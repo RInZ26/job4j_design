@@ -11,13 +11,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 /**
- * Класс, определяющий какие типа клеток может занимать машина
+ * Класс - определяющий какие типы машин бывают на парковке и в зависимости
+ * от этого решает - какие типы ячеек CellType может обрабатывать Car
  */
 public class CarType {
     public final static int INFINITY_SIZE = Integer.MAX_VALUE;
     private int minSize;
     private int maxSize;
     private String name;
+
     /**
      * Мапа действий при проверке на добавление
      */
@@ -50,9 +52,7 @@ public class CarType {
     /**
      * Проверяет, принадлежит ли машина к данному типу
      *
-     * @param size
-     *
-     * @return
+     * @param size проверяемый размер
      */
     public boolean isThisType(int size) {
         return size >= minSize && size <= maxSize;
@@ -92,7 +92,7 @@ public class CarType {
     }
 
     /**
-     * Класс, вмещяющий в себя самую функцию + её приоритет, так как может
+     * Класс, вмещяющий в себя саму функцию + её приоритет, так как может
      * быть приоритет расстановки, например HighCar по приоритету займёт
      * место для HighCar, а уже во вторую очередь будет рассматривать места
      * для маленьких машин.
@@ -167,7 +167,10 @@ public class CarType {
             return Objects.hash(priority, carRule);
         }
 
-        public enum Priority { //FIXME
+        /**
+         * Приоритеты правил в порядке выполнения
+         */
+        public enum Priority {
             FIRST(0), SECOND(1);
             private int numberPriority;
 
