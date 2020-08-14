@@ -31,17 +31,20 @@ public class CarType {
         this.mapRules = mapRules;
     }
 
-    /**
-     * Проверка + возвращение результатов, может ли машина такого типа встать
-     * на клетку в текущих реалиях
-     */
-    public Cell[] getPossibleCells(CellType cellType, Holder holder) {
-        var result = mapRules.get(cellType);
-        return !Objects.isNull(result) ? result.apply(holder) : null;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public int getMinSize() {
+        return minSize;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public Map<CellType, Rule> getMapRules() {
+        return mapRules;
     }
 
     /**
@@ -141,12 +144,40 @@ public class CarType {
             return isExecutable;
         }
 
-        public void setIsExecutable(BiPredicate<Car, TypedParking> isExecutable) {
+        public void setIsExecutable(
+                BiPredicate<Car, TypedParking> isExecutable) {
             this.isExecutable = isExecutable;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Rule rule = (Rule) o;
+            return priority == rule.priority && Objects.equals(carRule,
+                                                               rule.carRule);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(priority, carRule);
+        }
+
         public enum Priority { //FIXME
-            FIRST, SECOND
+            FIRST(0), SECOND(1);
+            private int numberPriority;
+
+            Priority(int priority) {
+                this.numberPriority = priority;
+            }
+
+            public int getNumberPriority() {
+                return numberPriority;
+            }
         }
     }
 }

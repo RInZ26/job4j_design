@@ -134,7 +134,7 @@ public class TypedParking extends AbstractParking {
 
     @Override
     public boolean isCanBeParking(Car car) {
-        return !Objects.isNull(getSuitableAnyCell(car));
+        return !Objects.isNull(getSuitablePriorityCells(car));
     }
 
     /**
@@ -173,7 +173,7 @@ public class TypedParking extends AbstractParking {
         }
         Cell cell = markup.getCell(x, y);
         var wrappedCar = wrapCar(car);
-        return wrappedCar.getPossibleCells(cell.getType(),
+        return wrappedCar.getAnyCells(cell.getType(),
                                            new CarType.Holder(cell.getX(),
                                                               cell.getY(),
                                                               wrappedCar.getCar()
@@ -188,34 +188,14 @@ public class TypedParking extends AbstractParking {
      *
      * @return возвращает клетку в которую можно разместить
      */
-    private Cell[] getSuitableAnyCell(Car car) {
+    private Cell[] getSuitablePriorityCells(Car car) {
         var wrappedCar = wrapCar(car);
         for (int x = 0; x < markup.getMap().length; x++) {
             for (int y = 0; y < markup.getMap()[x].length; y++) {
                 if (!markup.getMap()[x][y].isFree()) {
                     continue;
                 }
-                var result = wrappedCar.getPossibleCells(
-                        markup.getMap()[x][y].getType(),
-                        new CarType.Holder(x, y, wrappedCar.getCar()
-                                                           .getSize(), this));
-                if (!Objects.isNull(result)) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    }
-
-    private Cell[] getSuitableAnyByMaxPriorityCell(Car car) {
-        var wrappedCar = wrapCar(car);
-        for (int x = 0; x < markup.getMap().length; x++) {
-            for (int y = 0; y < markup.getMap()[x].length; y++) {
-                if (!markup.getMap()[x][y].isFree()) {
-                    continue; // по уму это тоже можно вынести в какой-то
-                    // базовый rule, чтобы не здесь проверять
-                }
-                var result = wrappedCar.getPossibleCells(
+                var result = wrappedCar.getPriorityCells(
                         markup.getMap()[x][y].getType(),
                         new CarType.Holder(x, y, wrappedCar.getCar()
                                                            .getSize(), this));
@@ -233,7 +213,7 @@ public class TypedParking extends AbstractParking {
 
     @Override
     public boolean addCar(Car car) {
-        return putToMap(car, getSuitableAnyCell(car));
+        return putToMap(car, getSuitablePriorityCells(car));
     }
 
     public boolean addCar(Car car, int x, int y) {

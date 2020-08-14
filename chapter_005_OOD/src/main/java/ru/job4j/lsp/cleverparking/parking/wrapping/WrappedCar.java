@@ -3,6 +3,11 @@ package ru.job4j.lsp.cleverparking.parking.wrapping;
 import ru.job4j.lsp.cleverparking.car.Car;
 import ru.job4j.lsp.cleverparking.parking.map.Cell;
 import ru.job4j.lsp.cleverparking.parking.map.CellType;
+import ru.job4j.lsp.cleverparking.parking.wrapping.CarType.Holder;
+
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Класс-обертка, чтобы совмещать Car и её тип
@@ -33,9 +38,57 @@ public class WrappedCar {
     }
 
     /**
-     * Просто обертка, чтобы делать более простые вызовы
+     * Проверка + возвращение результатов, может ли машина такого типа встать
+     * на клетку в текущих реалиях
      */
-    public Cell[] getPossibleCells(CellType cellType, CarType.Holder holder) {
-        return type.getPossibleCells(cellType, holder);
+    public Cell[] getPriorityCells(CellType cellType, Holder holder) {
+        var firstPriorityRule = type.getMapRules()
+                                    .values()
+                                    .stream()
+                                    .filter(rule -> rule.getPriority()
+                                                        .equals(CarType.Rule.Priority.FIRST)
+                                            && rule.getIsExecutable()
+                                                   .test(car,
+                                                         holder.getParking()))
+                                    .findAny();
+        if (firstPriorityRule.isPresent()) {
+            var currentRule = type.getMapRules()
+                                  .get(cellType);
+            if (!Objects.isNull(currentRule) && currentRule.getPriority()
+                                                           .equals(CarType.Rule.Priority.FIRST)) {
+                return currentRule.apply(holder);
+            } else {
+                return null;
+            }
+        } else {
+            var otherPriorityRules = type.getMapRules()
+                                         .values()
+                                         .stream()
+                                         .filter(rule -> !rule.getPriority()
+                                                              .equals(CarType.Rule.Priority.FIRST)
+                                                 && rule.getIsExecutable()
+                                                        .test(car,
+                                                              holder.getParking()))
+                                         .sorted(Comparator.comparingInt(
+                                                 a -> a.getPriority()
+                                                       .getNumberPriority()))
+                                         .collect(Collectors.toList());
+            for (CarType.Rule rule : otherPriorityRules) {
+                var cells = rule.apply(holder);
+                if (!Objects.isNull(cells)) {
+                    return cells;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Cell[] getAnyCells(CellType cellType, Holder holder) {
+        var rule = type.getMapRules()
+                       .get(cellType);
+        if (!Objects.isNull(rule)) {
+            return rule.apply(holder);
+        }
+        return null;
     }
 }

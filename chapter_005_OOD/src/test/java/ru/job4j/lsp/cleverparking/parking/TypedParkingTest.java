@@ -1,6 +1,5 @@
 package ru.job4j.lsp.cleverparking.parking;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import ru.job4j.lsp.cleverparking.car.Car;
 import ru.job4j.lsp.cleverparking.car.HighCar;
@@ -111,12 +110,10 @@ public class TypedParkingTest {
         assertThat(parking.isCanBeParking(car, 2, 2), is(false));
     }
 
-    @Ignore //fixme проблема с приоритетами
     @Test
     public void whenAddLightCarOnFirstPossiblePlaceWithSameType() {
         Car car = new HighCar(2);
         TypedParking parking = new TypedParking(2, 1);
-
         parking.addCar(car);
         assertTrue(parking.getCars()
                           .contains(car));
@@ -125,7 +122,7 @@ public class TypedParkingTest {
         expected.setCell(0, 1, lightCell);
         expected.setCell(1, 0, highCell);
         expected.setCell(1, 1, CellType.UNPLACEABLE_CELL);
-        parking.getMarkup()
+        expected
                .getCell(1, 0)
                .setOwner(car);
         assertThat(parking.getMarkup()
