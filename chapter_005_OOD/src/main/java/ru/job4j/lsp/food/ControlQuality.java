@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ControlQuality {
     /**
@@ -32,6 +33,7 @@ public class ControlQuality {
 
     /**
      * Раз есть лист саплаеров, то, очевидно, нужны и методы изменения коллекции
+     *
      * @param foodSupplier
      */
     public void addStore(FoodSupplier foodSupplier) {
@@ -75,5 +77,18 @@ public class ControlQuality {
             }
         }
         return result;
+    }
+
+    /**
+     * Динамическое распределение еды по текущим foodSupplier'ам
+     */
+    public void resort() {
+        var allFood = shopList.stream()
+                              .flatMap(s -> s.getAllFood()
+                                             .stream())
+                              .collect(Collectors.toList());
+        shopList.forEach(e -> e.getFoodCollection()
+                               .clear());
+        splitFoodSoft(allFood);
     }
 }
