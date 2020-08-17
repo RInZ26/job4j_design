@@ -98,7 +98,7 @@ public class SimpleMenuItemTest {
         menuItem1.addChild(menuItem2);
         menuItem2.setParent(menuItem1);
         menuItem2.display();
-        assertThat(outputStream.toString(), is("****** natasha\r\n"));
+        assertThat(outputStream.toString(), is("****** natasha" + System.lineSeparator()));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SimpleMenuItemTest {
         menuItem0.addChild(menuItem1);
         menuItem1.setParent(menuItem0);
         menuItem1.display();
-        assertThat(outputStream.toString(), is("*** katya\r\n"));
+        assertThat(outputStream.toString(), is("*** katya" + System.lineSeparator()));
     }
 
     @Test
@@ -119,6 +119,6 @@ public class SimpleMenuItemTest {
         System.setOut(new PrintStream(outputStream));
         MenuItem menuItem0 = new SimpleMenuItem("anya");
         menuItem0.display();
-        assertThat(outputStream.toString(), is(" anya\r\n"));
+        assertThat(outputStream.toString(), is(" anya" + System.lineSeparator()));
     }
 }
