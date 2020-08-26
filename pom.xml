@@ -15,6 +15,7 @@
         <module>chapter_003_SQL_JDBC</module>
         <module>chapter_004_GarbageCollection</module>
         <module>chapter_005_OOD</module>
+        <module>chapter_006_Multithreading</module>
     </modules>
 
 
