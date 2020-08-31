@@ -8,20 +8,15 @@ import static java.lang.Thread.State.TERMINATED;
  * Класс - демонстрация различных состояний у нити
  */
 public class ThreadStateDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         var demo = new ThreadState(Thread.currentThread());
-        try {
-            demo.getFirst()
-                .join();
-            demo.getSecond()
-                .join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Predicate<Thread> rule = (t -> t.getState()
                                         .equals(TERMINATED));
-        if (rule.test(demo.getFirst()) && rule.test(demo.getSecond())) {
-            System.out.println("Работа завершена");
+        while (!rule.test(demo.getFirst()) && !rule.test(demo.getSecond())) {
+            Thread.sleep(1);
         }
+        ThreadState.printInfo(demo.getFirst());
+        ThreadState.printInfo(demo.getSecond());
+        System.out.println("Работа завершена");
     }
 }
