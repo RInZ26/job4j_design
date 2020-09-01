@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: ru.job4j.threads.concurrent.FileLoader
+Main-Class: ru.job4j.threads.concurrent.fileloader.FileLoader
 
