@@ -11,15 +11,15 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 @Immutable //сама аннотация ничего не делает, она просто маркер
 public class Node<T> {
-    private final Node next;
+    private final Node<T> next;
     private final T value;
 
-    public Node(Node next, T value) {
+    public Node(Node<T> next, T value) {
         this.next = next;
         this.value = value;
     }
 
-    public Node getNext() {
+    public Node<T> getNext() {
         return next;
     }
 
@@ -30,11 +30,11 @@ public class Node<T> {
     /**
      * Альтернатива "сеттерам" для поддержки Immutable
      */
-    public Node<T> updateNext(Node next) {
-        return new Node<T>(next, this.value);
+    public Node<T> updateNext(Node<T> next) {
+        return new Node<>(next, this.value);
     }
 
     public Node<T> updateValue(T value) {
-        return new Node<T>(this.next, value);
+        return new Node<>(this.next, value);
     }
 }
