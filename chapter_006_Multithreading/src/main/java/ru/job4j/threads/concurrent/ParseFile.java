@@ -1,8 +1,11 @@
 package ru.job4j.threads.concurrent;
 
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.io.*;
 import java.util.Objects;
+import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 
 /**
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
  */
 @ThreadSafe
 public class ParseFile {
+    @GuardedBy("this")
     private final File file;
 
     public ParseFile(File file) {
@@ -46,26 +50,25 @@ public class ParseFile {
     /**
      * Раз подразумевается кастинг в чары, то есть смысл сделать Reader сразу
      */
-    public synchronized String getContent() {
-        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-            return in.lines()
-                     .collect(Collectors.joining());
-        } catch (IOException io) {
-            io.printStackTrace(); //логгера нету
-        }
-        return "";
+    public String getContent() {
+        return getContentByRule(c -> true);
     }
 
     /**
-     * Может и не слишком выгодно по производительности из-за сильного абуза
-     * стримов с явно лишними усложнениями, но зато придерживаемся
-     * функционального стиля
+     * Без юникод символов
      */
-    public synchronized String getContentWithoutUnicode() {
+    public String getContentWithoutUnicode() {
+        return getContentByRule(c -> c < 0x80);
+    }
+
+    /**
+     * Обобщенный метод чтения с фильтром
+     */
+    private synchronized String getContentByRule(IntPredicate rule) {
         try (BufferedReader in = new BufferedReader(new FileReader(file))) {
             return in.lines()
                      .flatMapToInt(String::chars)
-                     .filter(c -> c < 0x80)
+                     .filter(rule::test)
                      .mapToObj(String::valueOf)
                      .collect(Collectors.joining());
         } catch (IOException io) {
