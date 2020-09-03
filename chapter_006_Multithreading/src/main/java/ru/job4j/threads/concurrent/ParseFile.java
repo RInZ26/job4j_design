@@ -1,0 +1,89 @@
+package ru.job4j.threads.concurrent;
+
+import javax.annotation.concurrent.ThreadSafe;
+import java.io.*;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Делаем допущение(на основании кода до рефакторинга), что работаем с
+ * текстовыми файлами - где можем принимать всё за чары => можно
+ * использовать Reader и Printer, в противном случае
+ * лучше было бы использовать обычные байтовые потоки.
+ *
+ * Что касается многопоточности:
+ * Всё-таки сеттеры в контексте многопточности и безопасности не очень
+ * хороши, незачем здесь давать возможность менять файлы. Парсеры можно
+ * всегда пересоздать
+ */
+@ThreadSafe
+public class ParseFile {
+    private final File file;
+
+    public ParseFile(File file) {
+        Objects.requireNonNull(file);
+        this.file = file;
+    }
+
+    /**
+     * Благодаря final переменной можно не беспокоиться о геттере и
+     * псеведосеттере updateFile - их не нужно синхронизировать
+     *
+     * @return
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Замещение сеттера с учетом того, что this.file - final => при попытке
+     * изменения файла, нужно просто создавать новый парсер
+     */
+    public ParseFile updateFile(File file) {
+        return new ParseFile(file);
+    }
+
+    /**
+     * Раз подразумевается кастинг в чары, то есть смысл сделать Reader сразу
+     */
+    public synchronized String getContent() {
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+            return in.lines()
+                     .collect(Collectors.joining());
+        } catch (IOException io) {
+            io.printStackTrace(); //логгера нету
+        }
+        return "";
+    }
+
+    /**
+     * Может и не слишком выгодно по производительности из-за сильного абуза
+     * стримов с явно лишними усложнениями, но зато придерживаемся
+     * функционального стиля
+     */
+    public synchronized String getContentWithoutUnicode() {
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+            return in.lines()
+                     .flatMapToInt(String::chars)
+                     .filter(c -> c < 0x80)
+                     .mapToObj(String::valueOf)
+                     .collect(Collectors.joining());
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Простое сохранение
+     *
+     * @param content
+     */
+    public synchronized void saveContent(String content) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.print(content);
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+    }
+}
