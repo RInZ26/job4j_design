@@ -1,5 +1,6 @@
 package ru.job4j.threads.concurrent.synchrostorage;
 
+import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.HashMap;
@@ -16,12 +17,10 @@ public class UserStorage {
      * из того, что синхронизацию мы обеспечиваем методами, а не на уровне
      * коллекции (не до конца понятно, правильно ли это)
      */
+    @GuardedBy("this")
     private Map<Integer, User> usersMap = new HashMap<>();
 
-    /**
-     * Для добавления в коллекцию синхронизация, пожалуй, будет избыточной.
-     */
-    public boolean add(User user) {
+    public synchronized boolean add(User user) {
         return usersMap.putIfAbsent(user.getId(), user) == null;
     }
 
@@ -33,9 +32,6 @@ public class UserStorage {
         return usersMap.containsValue(user) && add(user);
     }
 
-    /**
-     * Удаление, очевидно, в отличие от add должно синхрониться
-     */
     public synchronized boolean delete(User user) {
         return usersMap.remove(user.getId()) != null;
     }
@@ -43,10 +39,6 @@ public class UserStorage {
     /**
      * Перевод денег между счетами по id, но, при этом сами объекты User не
      * синронятся.
-     *
-     * @param sourceId
-     * @param destId
-     * @param amount
      */
     public synchronized void transfer(int sourceId, int destId, int amount)
             throws Exception {
