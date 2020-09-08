@@ -11,5 +11,12 @@
 
     <artifactId>chapter_006_Multithreading</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>ru.job4j</groupId>
+            <artifactId>chapter_001_DataStructure_Algorithms</artifactId>
+            <version>3</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>
