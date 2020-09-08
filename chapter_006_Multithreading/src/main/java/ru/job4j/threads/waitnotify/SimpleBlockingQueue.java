@@ -20,6 +20,10 @@ public class SimpleBlockingQueue<T> {
         this.size = size;
     }
 
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
+    }
+
     public synchronized int size() {
         return queue.size();
     }
