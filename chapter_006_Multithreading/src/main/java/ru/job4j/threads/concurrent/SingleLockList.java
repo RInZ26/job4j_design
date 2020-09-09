@@ -45,8 +45,6 @@ public class SingleLockList<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        synchronized (list) {
-            return copy().iterator();
-        }
+        return copy().iterator();
     }
 }
