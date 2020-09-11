@@ -16,7 +16,8 @@ public class ParallelSearch {
      */
     @GuardedBy("this")
     private int producerCount;
-    private SimpleBlockingQueue<Integer> queue;
+    @GuardedBy("itself")
+    private final SimpleBlockingQueue<Integer> queue;
 
     /**
      * @param size - размер очереди
@@ -34,6 +35,44 @@ public class ParallelSearch {
     }
 
     /**
+     * Не смотря на то, что queue сама по себе ThreadSafe, чтобы
+     * удовлетворить GuardBy - мы вынесем логику рабоы очереди в отдельные
+     * методы ParallelSearch и их уже засинхроним причем синхронить будем по
+     * queue, потому что внутри неё тоже идут блокировки по очереди =>
+     * блокировка будет того же рода, что должно быть хорошо
+     */
+    public void offer(Integer num) {
+        synchronized (queue) {
+            queue.offer(num);
+        }
+    }
+
+    /**
+     * read offer()
+     */
+    public Integer poll() {
+        synchronized (queue) {
+            return queue.poll();
+        }
+    }
+
+    /**
+     * Метод для удобства проверки окончания работы для консьюмеров
+     */
+    private boolean isWorking() {
+        return getProducerCount() != 0 || !isEmpty();
+    }
+
+    /**
+     * Синхронная проверка на пустоту для isWorking
+     */
+    public boolean isEmpty() {
+        synchronized (queue) {
+            return queue.isEmpty();
+        }
+    }
+
+    /**
      * Создаёт и запускает нового продьюсера элементов
      *
      * @param count количество созданных элементов
@@ -42,7 +81,7 @@ public class ParallelSearch {
         var result = new Thread(() -> {
             setProducerCount(getProducerCount() + 1);
             for (int index = 0; index != count; index++) {
-                queue.offer(index);
+                offer(index);
             }
             setProducerCount(getProducerCount() + -1);
         });
@@ -56,17 +95,10 @@ public class ParallelSearch {
     public Thread startConsumer() {
         var result = new Thread(() -> {
             while (isWorking()) {
-                queue.poll();
+                poll();
             }
         });
         result.start();
         return result;
-    }
-
-    /**
-     * Метод для удобства проверки окончания работы для консьюмеров
-     */
-    private synchronized boolean isWorking() {
-        return getProducerCount() != 0 || !queue.isEmpty();
     }
 }
