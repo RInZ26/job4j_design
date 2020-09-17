@@ -8,8 +8,8 @@ public class ParallelSearchTest {
     @Test
     public void whenProducersStopThenThreadIsShouldDie() {
         ParallelSearch ps = new ParallelSearch(10);
-        ps.startProducer(100);
+        var prodFirst = ps.startProducer(100);
         var consFirst = ps.startConsumer();
-        await().until(() -> !consFirst.isAlive());
+        await().until(() -> !consFirst.isAlive() && !prodFirst.isAlive());
     }
 }
