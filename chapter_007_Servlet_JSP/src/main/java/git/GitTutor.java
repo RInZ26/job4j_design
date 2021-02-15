@@ -7,5 +7,6 @@ public class GitTutor {
 
     public void method() {
     }
-
+    //commit 1
+    //commit 2
 }
