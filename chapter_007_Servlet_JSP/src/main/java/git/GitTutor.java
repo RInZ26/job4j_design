@@ -9,5 +9,6 @@ public class GitTutor {
     }
 
     public void rightMethodAfterCR() {
+        System.out.println("Космические изменения вселенной");
     }
 }
